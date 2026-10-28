@@ -1,0 +1,321 @@
+/* =========================================================
+   MODEL PERFORMANCE & ACCURACY MODULE
+   Scoped with an "mp-" prefix so it never touches existing
+   selectors. Reuses the app's existing CSS variables (colors,
+   radius, fonts) so it matches the terminal theme exactly.
+   ========================================================= */
+
+.mp-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-end;
+    margin-bottom: 8px;
+}
+
+.mp-field { display: flex; flex-direction: column; gap: 6px; min-width: 180px; }
+.mp-field span {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-family: var(--f-mono);
+}
+.mp-field input,
+.mp-field select {
+    padding: 8px 10px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-strong);
+    background: var(--bg-inset);
+    color: var(--text-bright);
+    font-family: var(--f-mono);
+}
+
+.mp-range-hint {
+    font-size: 0.75rem;
+    color: var(--text-faint);
+    margin: 0 0 18px;
+}
+
+.mp-empty-state, .mp-error-state {
+    background: var(--bg-inset);
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+}
+.mp-error-state { border-color: var(--neg); color: var(--neg); border-style: solid; }
+
+/* ---------------------------------------------------------
+   KPI cards (animated count-up values)
+   --------------------------------------------------------- */
+.mp-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.mp-kpi-card {
+    background: var(--bg-inset);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--info);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    transition: border-color 0.2s ease, transform 0.15s ease;
+}
+.mp-kpi-card:hover { border-color: var(--border-strong); }
+.mp-kpi-card[data-metric="mape"] { border-left-color: var(--amber); }
+.mp-kpi-card[data-metric="r2"] { border-left-color: var(--pos); }
+.mp-kpi-card[data-metric="mse"] { border-left-color: var(--violet); }
+
+.mp-kpi-title {
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-family: var(--f-mono);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 8px;
+}
+.mp-info {
+    cursor: help;
+    color: var(--text-faint);
+    font-size: 0.85rem;
+}
+.mp-kpi-value {
+    font-size: 1.65rem;
+    font-weight: 700;
+    color: var(--text-bright);
+    font-family: var(--f-mono);
+}
+.mp-kpi-subtitle { font-size: 0.7rem; color: var(--text-faint); margin-top: 4px; }
+
+/* ---------------------------------------------------------
+   Chart layout
+   --------------------------------------------------------- */
+.mp-main-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+    align-items: stretch;
+}
+.mp-main-grid:nth-of-type(2) { grid-template-columns: 1fr 1fr; }
+.mp-span-2 { grid-column: span 1; }
+
+.mp-points-badge {
+    font-size: 0.68rem;
+    font-family: var(--f-mono);
+    color: var(--text-dim);
+    background: var(--bg-inset);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 10px;
+}
+
+.mp-chart-sm { height: 260px; }
+.mp-chart-caption {
+    font-size: 0.72rem;
+    color: var(--text-faint);
+    margin: 10px 2px 0;
+    line-height: 1.5;
+}
+
+/* ---------------------------------------------------------
+   Circular performance gauge
+   --------------------------------------------------------- */
+.mp-gauge-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.mp-gauge-wrap { position: relative; width: 100%; max-width: 240px; margin: 6px auto 4px; }
+
+.mp-gauge-svg { width: 100%; height: auto; overflow: visible; }
+
+.mp-gauge-track {
+    fill: none;
+    stroke: var(--bg-inset);
+    stroke-width: 16;
+    stroke-linecap: round;
+}
+
+.mp-gauge-fill {
+    fill: none;
+    stroke-width: 16;
+    stroke-linecap: round;
+    stroke-dasharray: 282.7;
+    stroke-dashoffset: 282.7;
+    transition: stroke-dashoffset 0.9s cubic-bezier(0.22, 1, 0.36, 1), stroke 0.3s ease;
+}
+.mp-gauge-fill.poor { stroke: var(--neg); }
+.mp-gauge-fill.average { stroke: var(--amber); }
+.mp-gauge-fill.good { stroke: var(--info); }
+.mp-gauge-fill.excellent { stroke: var(--pos); }
+
+.mp-gauge-readout {
+    position: absolute;
+    left: 50%;
+    bottom: 6px;
+    transform: translateX(-50%);
+    text-align: center;
+}
+.mp-gauge-score {
+    font-family: var(--f-mono);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-bright);
+    line-height: 1;
+}
+.mp-gauge-category {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-top: 4px;
+}
+.mp-gauge-category.poor { color: var(--neg); }
+.mp-gauge-category.average { color: var(--amber); }
+.mp-gauge-category.good { color: var(--info); }
+.mp-gauge-category.excellent { color: var(--pos); }
+
+.mp-gauge-legend {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 8px;
+    font-size: 0.66rem;
+    font-family: var(--f-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+.mp-legend-item { position: relative; padding-left: 14px; color: var(--text-dim); }
+.mp-legend-item::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 50%;
+    transform: translateY(-50%);
+    width: 8px; height: 8px;
+    border-radius: 50%;
+}
+.mp-legend-item.poor::before { background: var(--neg); }
+.mp-legend-item.average::before { background: var(--amber); }
+.mp-legend-item.good::before { background: var(--info); }
+.mp-legend-item.excellent::before { background: var(--pos); }
+
+/* ---------------------------------------------------------
+   Trend direction confusion matrix
+   --------------------------------------------------------- */
+.mp-confusion-layout {
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.mp-confusion-matrix {
+    display: grid;
+    grid-template-columns: 100px 100px 100px;
+    gap: 4px;
+    font-family: var(--f-mono);
+}
+
+.mp-cm-corner { }
+.mp-cm-header {
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 6px 4px;
+}
+.mp-cm-cell {
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+}
+.mp-cm-tp { background: var(--pos-wash); color: var(--pos); border-color: rgba(36, 209, 122, 0.35); }
+.mp-cm-tn { background: var(--pos-wash); color: var(--pos); border-color: rgba(36, 209, 122, 0.35); }
+.mp-cm-fp { background: var(--neg-wash); color: var(--neg); border-color: rgba(255, 77, 94, 0.35); }
+.mp-cm-fn { background: var(--neg-wash); color: var(--neg); border-color: rgba(255, 77, 94, 0.35); }
+
+.mp-confusion-metrics {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+    gap: 10px 20px;
+}
+.mp-cm-metric {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    background: var(--bg-inset);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+}
+.mp-cm-metric-label {
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+.mp-cm-metric-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-bright);
+    font-family: var(--f-mono);
+}
+
+/* ---------------------------------------------------------
+   Interpretation panel
+   --------------------------------------------------------- */
+.mp-interpretation-panel {
+    background: var(--amber-wash);
+    border: 1px solid var(--border-accent);
+    border-radius: var(--radius-lg);
+    padding: 16px 18px;
+    margin-top: 4px;
+}
+.mp-interpretation-header {
+    font-family: var(--f-display);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-bright);
+    margin-bottom: 8px;
+}
+.mp-interpretation-panel p {
+    margin: 0;
+    color: var(--text);
+    font-size: 0.88rem;
+    line-height: 1.6;
+}
+
+/* ---------------------------------------------------------
+   Responsive
+   --------------------------------------------------------- */
+@media (max-width: 900px) {
+    .mp-main-grid,
+    .mp-main-grid:nth-of-type(2) { grid-template-columns: 1fr; }
+    .mp-confusion-layout { flex-direction: column; align-items: flex-start; }
+}

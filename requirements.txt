@@ -1,0 +1,17 @@
+yfinance
+pandas
+numpy
+matplotlib
+scikit-learn
+tensorflow
+flask
+scipy
+flask-session
+streamlit
+plotly
+python-dotenv
+# Optional: conversational AI is called through the standard library; no SDK needed.
+Flask-SQLAlchemy>=3.1,<4
+psycopg[binary]>=3.2,<4
+requests>=2.31,<3
+gunicorn>=22,<24

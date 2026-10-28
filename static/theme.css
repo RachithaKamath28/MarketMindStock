@@ -1,0 +1,457 @@
+/* =========================================================
+   MARKETMIND — PREMIUM FINTECH THEME LAYER
+   Loaded AFTER style.css / model_performance.css / auth.css.
+   It re-uses the existing variable names (--bg, --bg-panel,
+   --text, --amber ...) and only changes their values per theme,
+   then adds background art, glass/solid card surfaces, inputs,
+   buttons and smooth theme transitions.
+
+   NOTE: --amber / --amber-dim / --amber-wash are the app's
+   *brand accent* variables. In this layer the brand accent is
+   emerald. Truly "medium / average / neutral" data states use
+   the new --warn variable so risk colours keep their meaning.
+   ========================================================= */
+
+/* ---------- 1. DESIGN TOKENS : DARK (default) ---------- */
+:root,
+:root[data-theme="dark"] {
+    color-scheme: dark;
+
+    --bg: #050912;
+    --bg-raised: #0a111f;
+    --bg-panel: #0d1626;
+    --bg-panel-hover: #132036;
+    --bg-inset: #070d19;
+
+    --border: #1a2a42;
+    --border-strong: #2a4263;
+    --border-accent: rgba(34, 229, 168, 0.30);
+
+    --text: #cbd8e8;
+    --text-bright: #f2f7fd;
+    --text-dim: #93a6bf;
+    --text-faint: #7387a1;
+
+    /* brand accent (emerald) */
+    --amber: #2ee6b0;
+    --amber-dim: #159c78;
+    --amber-wash: rgba(34, 229, 168, 0.11);
+
+    --pos: #4ade80;
+    --pos-wash: rgba(74, 222, 128, 0.12);
+    --neg: #ff6477;
+    --neg-wash: rgba(255, 100, 119, 0.12);
+    --info: #38bdf8;
+    --info-wash: rgba(56, 189, 248, 0.12);
+    --violet: #a78bfa;
+    --warn: #fbbf24;
+    --warn-wash: rgba(251, 191, 36, 0.12);
+
+    --blue: #4f8bff;
+    --cyan: #22d3ee;
+
+    /* surfaces */
+    --glass-bg: linear-gradient(145deg, rgba(22, 36, 60, 0.62), rgba(10, 18, 33, 0.55));
+    --glass-bg-solid: rgba(11, 18, 32, 0.72);
+    --glass-border: rgba(130, 172, 224, 0.15);
+    --glass-border-hover: rgba(46, 230, 176, 0.38);
+    --glass-shadow: 0 10px 34px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    --glass-shadow-hover: 0 14px 40px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(46, 230, 176, 0.10), 0 0 28px rgba(34, 229, 168, 0.10);
+    --glass-blur: blur(14px) saturate(1.25);
+    --head-bg: rgba(8, 14, 26, 0.78);
+    --row-hover: rgba(46, 230, 176, 0.06);
+    --field-bg: rgba(5, 10, 20, 0.72);
+
+    /* buttons */
+    --btn-bg: linear-gradient(135deg, rgba(34, 229, 168, 0.20), rgba(56, 189, 248, 0.14));
+    --btn-bg-hover: linear-gradient(135deg, rgba(34, 229, 168, 0.32), rgba(56, 189, 248, 0.24));
+    --btn-fg: #5df0c4;
+    --btn-border: rgba(46, 230, 176, 0.45);
+    --btn-shadow-hover: 0 0 22px rgba(34, 229, 168, 0.22);
+
+    /* chat / solid brand gradient (white text on it) */
+    --grad-solid: linear-gradient(135deg, #087f63 0%, #0a76ad 55%, #2b58d8 100%);
+    --grad-shadow: 0 8px 28px rgba(20, 110, 190, 0.38);
+
+    --scroll-thumb: #2a4263;
+    --focus-ring: 0 0 0 3px rgba(46, 230, 176, 0.22);
+
+    --radius: 8px;
+    --radius-lg: 14px;
+}
+
+/* ---------- 2. DESIGN TOKENS : LIGHT ---------- */
+:root[data-theme="light"] {
+    color-scheme: light;
+
+    --bg: #f3f7fb;
+    --bg-raised: #ffffff;
+    --bg-panel: #ffffff;
+    --bg-panel-hover: #eef5fa;
+    --bg-inset: #f5f8fc;
+
+    --border: #dbe5ef;
+    --border-strong: #c2d2e3;
+    --border-accent: rgba(8, 128, 94, 0.30);
+
+    --text: #2a3a50;
+    --text-bright: #0d1b2e;
+    --text-dim: #4a5d75;
+    --text-faint: #62768e;
+
+    --amber: #08805e;
+    --amber-dim: #0b7d5d;
+    --amber-wash: rgba(8, 128, 94, 0.09);
+
+    --pos: #0a8a4f;
+    --pos-wash: rgba(10, 138, 79, 0.10);
+    --neg: #cf2d44;
+    --neg-wash: rgba(207, 45, 68, 0.09);
+    --info: #0a7fb0;
+    --info-wash: rgba(10, 127, 176, 0.10);
+    --violet: #6d4acb;
+    --warn: #a85a00;
+    --warn-wash: rgba(168, 90, 0, 0.10);
+
+    --blue: #2f5fe0;
+    --cyan: #0b86b8;
+
+    --glass-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.82));
+    --glass-bg-solid: rgba(255, 255, 255, 0.88);
+    --glass-border: #dbe5ef;
+    --glass-border-hover: rgba(8, 128, 94, 0.38);
+    --glass-shadow: 0 1px 2px rgba(16, 38, 70, 0.05), 0 10px 28px rgba(16, 38, 70, 0.07);
+    --glass-shadow-hover: 0 2px 4px rgba(16, 38, 70, 0.06), 0 14px 34px rgba(16, 38, 70, 0.10), 0 0 0 1px rgba(8, 128, 94, 0.08);
+    --glass-blur: blur(10px) saturate(1.1);
+    --head-bg: rgba(236, 243, 249, 0.92);
+    --row-hover: rgba(8, 128, 94, 0.06);
+    --field-bg: #ffffff;
+
+    --btn-bg: linear-gradient(135deg, #08805e 0%, #0a78a6 100%);
+    --btn-bg-hover: linear-gradient(135deg, #07704f 0%, #086b96 100%);
+    --btn-fg: #ffffff;
+    --btn-border: transparent;
+    --btn-shadow-hover: 0 6px 18px rgba(8, 110, 120, 0.28);
+
+    --grad-solid: linear-gradient(135deg, #087f63 0%, #0a76ad 55%, #2b58d8 100%);
+    --grad-shadow: 0 8px 24px rgba(20, 110, 190, 0.28);
+
+    --scroll-thumb: #b9c9da;
+    --focus-ring: 0 0 0 3px rgba(8, 128, 94, 0.18);
+}
+
+/* ---------- 3. PAGE BACKGROUND (two cross-fading fixed layers) ---------- */
+html { background-color: var(--bg); min-height: 100%; }
+html body { background: transparent !important; position: relative; }
+
+html::before,
+html::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-repeat: no-repeat;
+    transition: opacity 0.5s ease;
+}
+
+/* dark layer */
+html::before {
+    background:
+        url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1600 760%22 preserveAspectRatio=%22xMidYMax slice%22%3E%3Cdefs%3E%3ClinearGradient id=%22f%22 x1=%220%22 y1=%220%22 x2=%220%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%23fff%22 stop-opacity=%220%22/%3E%3Cstop offset=%22.45%22 stop-color=%22%23fff%22 stop-opacity=%22.8%22/%3E%3Cstop offset=%221%22 stop-color=%22%23fff%22/%3E%3C/linearGradient%3E%3Cmask id=%22m%22%3E%3Crect width=%221600%22 height=%22760%22 fill=%22url(%23f)%22/%3E%3C/mask%3E%3CradialGradient id=%22gl%22%3E%3Cstop offset=%220%22 stop-color=%22%2322d3ee%22 stop-opacity=%220.55%22/%3E%3Cstop offset=%221%22 stop-color=%22%2322d3ee%22 stop-opacity=%220%22/%3E%3C/radialGradient%3E%3ClinearGradient id=%22a%22 x1=%220%22 y1=%220%22 x2=%220%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%2338bdf8%22 stop-opacity=%22.14%22/%3E%3Cstop offset=%221%22 stop-color=%22%2338bdf8%22 stop-opacity=%220%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg mask=%22url(%23m)%22%3E%3Cline x1=%220%22 x2=%221600%22 y1=%22300%22 y2=%22300%22 stroke=%22%237aa6d8%22 stroke-opacity=%22.22%22 stroke-dasharray=%222 8%22/%3E%3Cline x1=%220%22 x2=%221600%22 y1=%22390%22 y2=%22390%22 stroke=%22%237aa6d8%22 stroke-opacity=%22.22%22 stroke-dasharray=%222 8%22/%3E%3Cline x1=%220%22 x2=%221600%22 y1=%22480%22 y2=%22480%22 stroke=%22%237aa6d8%22 stroke-opacity=%22.22%22 stroke-dasharray=%222 8%22/%3E%3Cline x1=%220%22 x2=%221600%22 y1=%22570%22 y2=%22570%22 stroke=%22%237aa6d8%22 stroke-opacity=%22.22%22 stroke-dasharray=%222 8%22/%3E%3Cline x1=%220%22 x2=%221600%22 y1=%22660%22 y2=%22660%22 stroke=%22%237aa6d8%22 stroke-opacity=%22.22%22 stroke-dasharray=%222 8%22/%3E%3Cline x1=%220%22 x2=%221600%22 y1=%22750%22 y2=%22750%22 stroke=%22%237aa6d8%22 stroke-opacity=%22.22%22 stroke-dasharray=%222 8%22/%3E%3Cpath d=%22M34,660 L68,660 L102,653 L136,641 L170,637 L204,632 L238,625 L272,625 L306,627 L340,619 L374,604 L409,589 L443,573 L477,556 L511,539 L545,521 L579,496 L613,470 L647,445 L681,422 L715,401 L749,386 L783,371 L817,352 L851,342 L885,345 L919,343 L953,337 L987,333 L1021,317 L1055,295 L1089,287 L1123,294 L1157,309 L1191,329 L1226,349 L1260,360 L1294,365 L1328,368 L1362,374 L1396,386 L1430,392 L1464,392 L1498,387 L1532,376 L1566,355 L1566,760 L34,760 Z%22 fill=%22url(%23a)%22/%3E%3Cg opacity=%220.34%22%3E%3Cline x1=%2234%22 x2=%2234%22 y1=%22686%22 y2=%22697%22 stroke=%22%232ee6a8%22 stroke-width=%221.4%22/%3E%3Crect x=%2227%22 y=%22693%22 width=%2214%22 height=%223%22 rx=%221.5%22 fill=%22%232ee6a8%22 fill-opacity=%22.55%22 stroke=%22%232ee6a8%22/%3E%3Cline x1=%2268%22 x2=%2268%22 y1=%22680%22 y2=%22698%22 stroke=%22%23ff6b7f%22 stroke-width=%221.4%22/%3E%3Crect x=%2261%22 y=%22693%22 width=%2214%22 height=%223%22 rx=%221.5%22 fill=%22%23ff6b7f%22 fill-opacity=%22.55%22 stroke=%22%23ff6b7f%22/%3E%3Cline x1=%22102%22 x2=%22102%22 y1=%22643%22 y2=%22710%22 stroke=%22%232ee6a8%22 stroke-width=%221.4%22/%3E%3Crect x=%2295%22 y=%22650%22 width=%2214%22 height=%2245%22 rx=%221.5%22 fill=%22%232ee6a8%22 fill-opacity=%22.55%22 stroke=%22%232ee6a8%22/%3E%3Cline x1=%22136%22 x2=%22136%22 y1=%22627%22 y2=%22652%22 stroke=%22%232ee6a8%22 stroke-width=%221.4%22/%3E%3Crect x=%22129%22 y=%22632%22 width=%2214%22 height=%2217%22 rx=%221.5%22 fill=%22%232ee6a8%22 fill-opacity=%22.55%22 stroke=%22%232ee6a8%22/%3E%3Cline x1=%22170%22 x2=%22170%22 y1=%22620%22 y2=%22685%22 stroke=%22%23ff6b7f%22 stroke-width=%221.4%22/%3E%3Crect x=%22163%22 y=%22632%22 width=%2214%22 height=%2245%22 rx=%221.5%22 fill=%22%23ff6b7f%22 fill-opacity=%22.55%22 stroke=%22%23ff6b7f%22/%3E%3Cline x1=%22204%22 x2=%22204%22 y1=%22628%22 y2=%22703%22 stroke=%22%232ee6a8%22 stroke-width=%221.4%22/%3E%3Crect x=%22197%22 y=%22653%22 width=%2214%22 height=%2225%22 rx=%221.5%22 fill=%22%232ee6a8%22 fill-opacity=%22.55%22 stroke=%22%232ee6a8%22/%3E%3Cline x1=%22238%22 x2=%22238%22 y1=%22646%22 y2=%22677%22 stroke=%22%23ff6b7f%22 stroke-width=%221.4%22/%3E%3Crect x=%22231%22 y=%22653%22 width=%2214%22 height=%2220%22 rx=%221.5%22 fill=%22%23ff6b7f%22 fill-opacity=%22.55%22 stroke=%22%23ff6b7f%22/%3E%3Cline x1=%22272%22 x2=%22272%22 y1=%22658%22 y2=%22682%22 stroke=%22%232ee6a8%22 stroke-width=%221.4%22/%3E%3Crect x=%22265%22 y=%22665%22 width=%2214%22 height=%227%22 rx=%221.5%22 fill=%22%232ee6a8%22 fill-opacity=%22.55%22 stroke=%22%232ee6a8%22/%3E%3Cline x1=%22306%22 x2=%22306%22 y1=%22640%22 y2=%22675%22 stroke=%22%232ee6a8%22 stroke-width=%221.4%22/%3E%3Crect x=%22299%22 y=%22646%22 width=%2214%22 height=%2219%22 rx=%221.5%22 fill=%22%232ee6a8%22 fill-opacity=%22.55%22 stroke=%22%232ee6a8%22/%3E%3Cline x1=%22340%22 x2=%22340%22 y1=%22573%22 y2=%22664%22 stroke=%22%232ee6a8%22 stroke-width=%221.4%22/%3E%3Crect x=%22333%22 y=%22581%22 width=%2214%22 height=%2265%22 rx=%221.5%22 fill=%22%232ee6a8%22 fill-opacity=%22.55%22 stroke=%22%232ee6a8%22/%3E%3Cline x1=%22374%22 x2=%22374%22 y1=%22570%22 y2=%22597%22 stroke=%22%23ff6b7f%22 stroke-width=%221.4%22/%3E%3Crect x=%22367%22 y=%22581%22 width=%2214%22 height=%2211%22 rx=%221.5%22 fill=%22%23ff6b7f%22 fill-opacity=%22.55%22 stroke=%22%23ff6b7f%22/%3E%3Cline x1=%22409%22 x2=%22409%22 y1=%22578%22 y2=%22596%22 stroke=%22%232ee6a8%22 stroke-width=%221.4%22/%3E%3Crect x=%22402%22 y=%22587%22 width=%2214%22 height=%225%22 rx=%221.5%22 fill=%22%232ee6a8%22 fill-opacity=%22.55%22 stroke=%22%232ee6a8%22/%3E%3Cline x1=%22443%22 x2=%22443%22 y1=%22573%22 y2=%22600%22 stroke=%22%23ff6b7f%22 stroke-width=%221.4%22/%3E%3Crect x=%22436%22 y=%22587%22 width=%2214%22 height=%226%22 rx=%221.5%22 fill=%22%23ff6b7f%22 fill-opacity=%22.55%22 stroke=%22%23ff6b7f%22/%3E%3Cline x1=%22477%22 x2=%22477%22 y1=%22532%22 y2=%22596%22 stroke=%22%232ee6a8%22 stroke-width=%221.4%22/%3E%3Crect x=%22470%22 y=%22544%22 width=%2214%22 height=%2249%22 rx=%221.5%22 fill=%22%232ee6a8%22 fill-opacity=%22.55%22 stroke=%22%232ee6a8%22/%3E%3Cline x1=%22511%22 x2=%22511%22 y1=%22499%22 y2=%22544%22 stroke=%22%232ee6a8%22 stroke-width=%221.4%22/%3E%3Crect x=%22504%22 y=%22521%22 width=%2214%22 height=%2223%22 rx=%221.5%22 fill=%22%232ee6a8%22 fill-opacity=%22.55%22 stroke=%22%232ee6a8%22/%3E%3Cline x1=%22545%22 x2=%22545%22 y1=%22440%22 y2=%22526%22 stroke=%22%232ee6a8%22 stroke-width=%221.4%22/%3E%3Crect x=%22538%22 y=%22469%22 width=%2214%22 height=%2252%22 rx=%221.5%22 fill=%22%232ee6a8%22 fill-opacity=%22.55%22 stroke=%22%232ee6a8%22/%3E%3Cline x1=%22579%22 x2=%22579%22 y1=%22452%22 y2=%22477%22 stroke=%22%232ee6a8%22 stroke-width=%221.4%22/%3E%3Crect x=%22572%22 y=%22464%22 width=%2214%22 height=%226%22 rx=%221.5%22 fill=%22%232ee6a8%22 fill-opacity=%22.55%22 stroke=%22%232ee6a8%22/%3E%3Cline x1=%22613%22 x2=%22613%22 y1=%22435%22 y2=%22476%22 stroke=%22%232ee6a8%22 stroke-width=%221.4%22/%3E%3Crect x=%22606%22 y=%22457%22 width=%2214%22 height=%227%22 rx=%221.5%22 fill=%22%232ee6a8%22 fill-opacity=%22.55%22 stroke=%22%232ee6a8%22/%3E%3Cline x1=%22647%22 x2=%22647%22 y1=%22412%22 y2=%22478%22 stroke=%22%232ee6a8%22 stroke-width=%221.4%22/%3E%3Crect x=%22640%22 y=%22426%22 width=%2214%22 height=%2231%22 rx=%221.5%22 fill=%22%232ee6a8%22 fill-opacity=%22.55%22 stroke=%22%232ee6a8%22/%3E%3Cline x1=%22681%22 x2=%22681%22 y1=%22403%22 y2=%22445%22 stroke=%22%232ee6a8%22 stroke-width=%221.4%22/%3E%3Crect x=%22674%22 y=%22405%22 width=%2214%22 height=%2221%22 rx=%221.5%22 fill=%22%232ee6a8%22 fill-opacity=%22.55%22 stroke=%22%232ee6a8%22/%3E%3Cline x1=%22715%22 x2=%22715%22 y1=%22367%22 y2=%22412%22 stroke=%22%232ee6a8%22 stroke-width=%221.4%22/%3E%3Crect x=%22708%22 y=%22376%22 width=%2214%22 height=%2229%22 rx=%221.5%22 fill=%22%232ee6a8%22 fill-opacity=%22.55%22 stroke=%22%232ee6a8%22/%3E%3Cline x1=%22749%22 x2=%22749%22 y1=%22362%22 y2=%22416%22 stroke=%22%23ff6b7f%22 stroke-width=%221.4%22/%3E%3Crect x=%22742%22 y=%22376%22 width=%2214%22 height=%2232%22 rx=%221.5%22 fill=%22%23ff6b7f%22 fill-opacity=%22.55%22 stroke=%22%23ff6b7f%22/%3E%3Cline x1=%22783%22 x2=%22783%22 y1=%22328%22 y2=%22430%22 stroke=%22%232ee6a8%22 stroke-width=%221.4%22/%3E%3Crect x=%22776%22 y=%22357%22 width=%2214%22 height=%2251%22 rx=%221.5%22 fill=%22%232ee6a8%22 fill-opacity=%22.55%22 stroke=%22%232ee6a8%22/%3E%3Cline x1=%22817%22 x2=%22817%22 y1=%22319%22 y2=%22366%22 stroke=%22%232ee6a8%22 stroke-width=%221.4%22/%3E%3Crect x=%22810%22 y=%22341%22 width=%2214%22 height=%2217%22 rx=%221.5%22 fill=%22%232ee6a8%22 fill-opacity=%22.55%22 stroke=%22%232ee6a8%22/%3E%3Cline x1=%22851%22 x2=%22851%22 y1=%22304%22 y2=%22399%22 stroke=%22%23ff6b7f%22 stroke-width=%221.4%22/%3E%3Crect x=%22844%22 y=%22341%22 width=%2214%22 height=%2253%22 rx=%221.5%22 fill=%22%23ff6b7f%22 fill-opacity=%22.55%22 stroke=%22%23ff6b7f%22/%3E%3Cline x1=%22885%22 x2=%22885%22 y1=%22377%22 y2=%22423%22 stroke=%22%23ff6b7f%22 stroke-width=%221.4%22/%3E%3Crect x=%22878%22 y=%22394%22 width=%2214%22 height=%2215%22 rx=%221.5%22 fill=%22%23ff6b7f%22 fill-opacity=%22.55%22 stroke=%22%23ff6b7f%22/%3E%3Cline x1=%22919%22 x2=%22919%22 y1=%22362%22 y2=%22412%22 stroke=%22%232ee6a8%22 stroke-width=%221.4%22/%3E%3Crect x=%22912%22 y=%22364%22 width=%2214%22 height=%2245%22 rx=%221.5%22 fill=%22%232ee6a8%22 fill-opacity=%22.55%22 stroke=%22%232ee6a8%22/%3E%3Cline x1=%22953%22 x2=%22953%22 y1=%22317%22 y2=%22373%22 stroke=%22%232ee6a8%22 stroke-width=%221.4%22/%3E%3Crect x=%22946%22 y=%22341%22 width=%2214%22 height=%2223%22 rx=%221.5%22 fill=%22%232ee6a8%22 fill-opacity=%22.55%22 stroke=%22%232ee6a8%22/%3E%3Cline x1=%22987%22 x2=%22987%22 y1=%22307%22 y2=%22364%22 stroke=%22%232ee6a8%22 stroke-width=%221.4%22/%3E%3Crect x=%22980%22 y=%22315%22 width=%2214%22 height=%2226%22 rx=%221.5%22 fill=%22%232ee6a8%22 fill-opacity=%22.55%22 stroke=%22%232ee6a8%22/%3E%3Cline x1=%221021%22 x2=%221021%22 y1=%22250%22 y2=%22323%22 stroke=%22%232ee6a8%22 stroke-width=%221.4%22/%3E%3Crect x=%221014%22 y=%22264%22 width=%2214%22 height=%2251%22 rx=%221.5%22 fill=%22%232ee6a8%22 fill-opacity=%22.55%22 stroke=%22%232ee6a8%22/%3E%3Cline x1=%221055%22 x2=%221055%22 y1=%22255%22 y2=%22332%22 stroke=%22%23ff6b7f%22 stroke-width=%221.4%22/%3E%3Crect x=%221048%22 y=%22264%22 width=%2214%22 height=%2255%22 rx=%221.5%22 fill=%22%23ff6b7f%22 fill-opacity=%22.55%22 stroke=%22%23ff6b7f%22/%3E%3Cline x1=%221089%22 x2=%221089%22 y1=%22317%22 y2=%22385%22 stroke=%22%23ff6b7f%22 stroke-width=%221.4%22/%3E%3Crect x=%221082%22 y=%22319%22 width=%2214%22 height=%2250%22 rx=%221.5%22 fill=%22%23ff6b7f%22 fill-opacity=%22.55%22 stroke=%22%23ff6b7f%22/%3E%3Cline x1=%221123%22 x2=%221123%22 y1=%22346%22 y2=%22411%22 stroke=%22%23ff6b7f%22 stroke-width=%221.4%22/%3E%3Crect x=%221116%22 y=%22370%22 width=%2214%22 height=%2234%22 rx=%221.5%22 fill=%22%23ff6b7f%22 fill-opacity=%22.55%22 stroke=%22%23ff6b7f%22/%3E%3Cline x1=%221157%22 x2=%221157%22 y1=%22394%22 y2=%22413%22 stroke=%22%232ee6a8%22 stroke-width=%221.4%22/%3E%3Crect x=%221150%22 y=%22399%22 width=%2214%22 height=%224%22 rx=%221.5%22 fill=%22%232ee6a8%22 fill-opacity=%22.55%22 stroke=%22%232ee6a8%22/%3E%3Cline x1=%221191%22 x2=%221191%22 y1=%22370%22 y2=%22409%22 stroke=%22%232ee6a8%22 stroke-width=%221.4%22/%3E%3Crect x=%221184%22 y=%22386%22 width=%2214%22 height=%2213%22 rx=%221.5%22 fill=%22%232ee6a8%22 fill-opacity=%22.55%22 stroke=%22%232ee6a8%22/%3E%3Cline x1=%221226%22 x2=%221226%22 y1=%22371%22 y2=%22391%22 stroke=%22%23ff6b7f%22 stroke-width=%221.4%22/%3E%3Crect x=%221219%22 y=%22386%22 width=%2214%22 height=%225%22 rx=%221.5%22 fill=%22%23ff6b7f%22 fill-opacity=%22.55%22 stroke=%22%23ff6b7f%22/%3E%3Cline x1=%221260%22 x2=%221260%22 y1=%22377%22 y2=%22432%22 stroke=%22%23ff6b7f%22 stroke-width=%221.4%22/%3E%3Crect x=%221253%22 y=%22391%22 width=%2214%22 height=%2220%22 rx=%221.5%22 fill=%22%23ff6b7f%22 fill-opacity=%22.55%22 stroke=%22%23ff6b7f%22/%3E%3Cline x1=%221294%22 x2=%221294%22 y1=%22390%22 y2=%22418%22 stroke=%22%23ff6b7f%22 stroke-width=%221.4%22/%3E%3Crect x=%221287%22 y=%22411%22 width=%2214%22 height=%226%22 rx=%221.5%22 fill=%22%23ff6b7f%22 fill-opacity=%22.55%22 stroke=%22%23ff6b7f%22/%3E%3Cline x1=%221328%22 x2=%221328%22 y1=%22408%22 y2=%22437%22 stroke=%22%232ee6a8%22 stroke-width=%221.4%22/%3E%3Crect x=%221321%22 y=%22412%22 width=%2214%22 height=%224%22 rx=%221.5%22 fill=%22%232ee6a8%22 fill-opacity=%22.55%22 stroke=%22%232ee6a8%22/%3E%3Cline x1=%221362%22 x2=%221362%22 y1=%22394%22 y2=%22455%22 stroke=%22%23ff6b7f%22 stroke-width=%221.4%22/%3E%3Crect x=%221355%22 y=%22412%22 width=%2214%22 height=%2225%22 rx=%221.5%22 fill=%22%23ff6b7f%22 fill-opacity=%22.55%22 stroke=%22%23ff6b7f%22/%3E%3Cline x1=%221396%22 x2=%221396%22 y1=%22427%22 y2=%22470%22 stroke=%22%23ff6b7f%22 stroke-width=%221.4%22/%3E%3Crect x=%221389%22 y=%22437%22 width=%2214%22 height=%2217%22 rx=%221.5%22 fill=%22%23ff6b7f%22 fill-opacity=%22.55%22 stroke=%22%23ff6b7f%22/%3E%3Cline x1=%221430%22 x2=%221430%22 y1=%22411%22 y2=%22455%22 stroke=%22%232ee6a8%22 stroke-width=%221.4%22/%3E%3Crect x=%221423%22 y=%22416%22 width=%2214%22 height=%2237%22 rx=%221.5%22 fill=%22%232ee6a8%22 fill-opacity=%22.55%22 stroke=%22%232ee6a8%22/%3E%3Cline x1=%221464%22 x2=%221464%22 y1=%22394%22 y2=%22419%22 stroke=%22%232ee6a8%22 stroke-width=%221.4%22/%3E%3Crect x=%221457%22 y=%22402%22 width=%2214%22 height=%2214%22 rx=%221.5%22 fill=%22%232ee6a8%22 fill-opacity=%22.55%22 stroke=%22%232ee6a8%22/%3E%3Cline x1=%221498%22 x2=%221498%22 y1=%22376%22 y2=%22402%22 stroke=%22%232ee6a8%22 stroke-width=%221.4%22/%3E%3Crect x=%221491%22 y=%22384%22 width=%2214%22 height=%2218%22 rx=%221.5%22 fill=%22%232ee6a8%22 fill-opacity=%22.55%22 stroke=%22%232ee6a8%22/%3E%3Cline x1=%221532%22 x2=%221532%22 y1=%22342%22 y2=%22414%22 stroke=%22%232ee6a8%22 stroke-width=%221.4%22/%3E%3Crect x=%221525%22 y=%22350%22 width=%2214%22 height=%2234%22 rx=%221.5%22 fill=%22%232ee6a8%22 fill-opacity=%22.55%22 stroke=%22%232ee6a8%22/%3E%3Cline x1=%221566%22 x2=%221566%22 y1=%22325%22 y2=%22356%22 stroke=%22%232ee6a8%22 stroke-width=%221.4%22/%3E%3Crect x=%221559%22 y=%22331%22 width=%2214%22 height=%2220%22 rx=%221.5%22 fill=%22%232ee6a8%22 fill-opacity=%22.55%22 stroke=%22%232ee6a8%22/%3E%3C/g%3E%3Cpath d=%22M34,660 L68,660 L102,653 L136,641 L170,637 L204,632 L238,625 L272,625 L306,627 L340,619 L374,604 L409,589 L443,573 L477,556 L511,539 L545,521 L579,496 L613,470 L647,445 L681,422 L715,401 L749,386 L783,371 L817,352 L851,342 L885,345 L919,343 L953,337 L987,333 L1021,317 L1055,295 L1089,287 L1123,294 L1157,309 L1191,329 L1226,349 L1260,360 L1294,365 L1328,368 L1362,374 L1396,386 L1430,392 L1464,392 L1498,387 L1532,376 L1566,355%22 fill=%22none%22 stroke=%22%2338bdf8%22 stroke-width=%222.2%22 stroke-opacity=%220.6%22 stroke-linejoin=%22round%22 stroke-linecap=%22round%22/%3E%3Ccircle cx=%22238%22 cy=%22625%22 r=%2226%22 fill=%22url(%23gl)%22/%3E%3Ccircle cx=%22238%22 cy=%22625%22 r=%224.2%22 fill=%22%2322d3ee%22/%3E%3Ccircle cx=%22238%22 cy=%22625%22 r=%228%22 fill=%22none%22 stroke=%22%2322d3ee%22 stroke-opacity=%22.5%22/%3E%3Ccircle cx=%22545%22 cy=%22521%22 r=%2226%22 fill=%22url(%23gl)%22/%3E%3Ccircle cx=%22545%22 cy=%22521%22 r=%224.2%22 fill=%22%2322d3ee%22/%3E%3Ccircle cx=%22545%22 cy=%22521%22 r=%228%22 fill=%22none%22 stroke=%22%2322d3ee%22 stroke-opacity=%22.5%22/%3E%3Ccircle cx=%22851%22 cy=%22342%22 r=%2226%22 fill=%22url(%23gl)%22/%3E%3Ccircle cx=%22851%22 cy=%22342%22 r=%224.2%22 fill=%22%2322d3ee%22/%3E%3Ccircle cx=%22851%22 cy=%22342%22 r=%228%22 fill=%22none%22 stroke=%22%2322d3ee%22 stroke-opacity=%22.5%22/%3E%3Ccircle cx=%221157%22 cy=%22309%22 r=%2226%22 fill=%22url(%23gl)%22/%3E%3Ccircle cx=%221157%22 cy=%22309%22 r=%224.2%22 fill=%22%2322d3ee%22/%3E%3Ccircle cx=%221157%22 cy=%22309%22 r=%228%22 fill=%22none%22 stroke=%22%2322d3ee%22 stroke-opacity=%22.5%22/%3E%3Ccircle cx=%221464%22 cy=%22392%22 r=%2226%22 fill=%22url(%23gl)%22/%3E%3Ccircle cx=%221464%22 cy=%22392%22 r=%224.2%22 fill=%22%2322d3ee%22/%3E%3Ccircle cx=%221464%22 cy=%22392%22 r=%228%22 fill=%22none%22 stroke=%22%2322d3ee%22 stroke-opacity=%22.5%22/%3E%3C/g%3E%3C/svg%3E") center bottom / max(100%, 1200px) auto no-repeat,
+        linear-gradient(rgba(122, 166, 216, 0.045) 1px, transparent 1px) 0 0 / 56px 56px,
+        linear-gradient(90deg, rgba(122, 166, 216, 0.045) 1px, transparent 1px) 0 0 / 56px 56px,
+        radial-gradient(900px 520px at 6% -6%, rgba(34, 229, 168, 0.12), transparent 62%),
+        radial-gradient(820px 580px at 100% 0%, rgba(59, 130, 246, 0.15), transparent 62%),
+        radial-gradient(760px 520px at 88% 104%, rgba(34, 211, 238, 0.09), transparent 62%),
+        linear-gradient(160deg, #07101f 0%, #060b16 46%, #030509 100%);
+    opacity: 1;
+}
+
+/* light layer */
+html::after {
+    background:
+        url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1600 760%22 preserveAspectRatio=%22xMidYMax slice%22%3E%3Cdefs%3E%3ClinearGradient id=%22f%22 x1=%220%22 y1=%220%22 x2=%220%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%23fff%22 stop-opacity=%220%22/%3E%3Cstop offset=%22.45%22 stop-color=%22%23fff%22 stop-opacity=%22.8%22/%3E%3Cstop offset=%221%22 stop-color=%22%23fff%22/%3E%3C/linearGradient%3E%3Cmask id=%22m%22%3E%3Crect width=%221600%22 height=%22760%22 fill=%22url(%23f)%22/%3E%3C/mask%3E%3CradialGradient id=%22gl%22%3E%3Cstop offset=%220%22 stop-color=%22%230ea5a4%22 stop-opacity=%220.35%22/%3E%3Cstop offset=%221%22 stop-color=%22%230ea5a4%22 stop-opacity=%220%22/%3E%3C/radialGradient%3E%3ClinearGradient id=%22a%22 x1=%220%22 y1=%220%22 x2=%220%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%230b86b8%22 stop-opacity=%22.14%22/%3E%3Cstop offset=%221%22 stop-color=%22%230b86b8%22 stop-opacity=%220%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg mask=%22url(%23m)%22%3E%3Cline x1=%220%22 x2=%221600%22 y1=%22300%22 y2=%22300%22 stroke=%22%235f86ad%22 stroke-opacity=%22.22%22 stroke-dasharray=%222 8%22/%3E%3Cline x1=%220%22 x2=%221600%22 y1=%22390%22 y2=%22390%22 stroke=%22%235f86ad%22 stroke-opacity=%22.22%22 stroke-dasharray=%222 8%22/%3E%3Cline x1=%220%22 x2=%221600%22 y1=%22480%22 y2=%22480%22 stroke=%22%235f86ad%22 stroke-opacity=%22.22%22 stroke-dasharray=%222 8%22/%3E%3Cline x1=%220%22 x2=%221600%22 y1=%22570%22 y2=%22570%22 stroke=%22%235f86ad%22 stroke-opacity=%22.22%22 stroke-dasharray=%222 8%22/%3E%3Cline x1=%220%22 x2=%221600%22 y1=%22660%22 y2=%22660%22 stroke=%22%235f86ad%22 stroke-opacity=%22.22%22 stroke-dasharray=%222 8%22/%3E%3Cline x1=%220%22 x2=%221600%22 y1=%22750%22 y2=%22750%22 stroke=%22%235f86ad%22 stroke-opacity=%22.22%22 stroke-dasharray=%222 8%22/%3E%3Cpath d=%22M34,660 L68,660 L102,653 L136,641 L170,637 L204,632 L238,625 L272,625 L306,627 L340,619 L374,604 L409,589 L443,573 L477,556 L511,539 L545,521 L579,496 L613,470 L647,445 L681,422 L715,401 L749,386 L783,371 L817,352 L851,342 L885,345 L919,343 L953,337 L987,333 L1021,317 L1055,295 L1089,287 L1123,294 L1157,309 L1191,329 L1226,349 L1260,360 L1294,365 L1328,368 L1362,374 L1396,386 L1430,392 L1464,392 L1498,387 L1532,376 L1566,355 L1566,760 L34,760 Z%22 fill=%22url(%23a)%22/%3E%3Cg opacity=%220.26%22%3E%3Cline x1=%2234%22 x2=%2234%22 y1=%22686%22 y2=%22697%22 stroke=%22%230a9a72%22 stroke-width=%221.4%22/%3E%3Crect x=%2227%22 y=%22693%22 width=%2214%22 height=%223%22 rx=%221.5%22 fill=%22%230a9a72%22 fill-opacity=%22.55%22 stroke=%22%230a9a72%22/%3E%3Cline x1=%2268%22 x2=%2268%22 y1=%22680%22 y2=%22698%22 stroke=%22%23e0566a%22 stroke-width=%221.4%22/%3E%3Crect x=%2261%22 y=%22693%22 width=%2214%22 height=%223%22 rx=%221.5%22 fill=%22%23e0566a%22 fill-opacity=%22.55%22 stroke=%22%23e0566a%22/%3E%3Cline x1=%22102%22 x2=%22102%22 y1=%22643%22 y2=%22710%22 stroke=%22%230a9a72%22 stroke-width=%221.4%22/%3E%3Crect x=%2295%22 y=%22650%22 width=%2214%22 height=%2245%22 rx=%221.5%22 fill=%22%230a9a72%22 fill-opacity=%22.55%22 stroke=%22%230a9a72%22/%3E%3Cline x1=%22136%22 x2=%22136%22 y1=%22627%22 y2=%22652%22 stroke=%22%230a9a72%22 stroke-width=%221.4%22/%3E%3Crect x=%22129%22 y=%22632%22 width=%2214%22 height=%2217%22 rx=%221.5%22 fill=%22%230a9a72%22 fill-opacity=%22.55%22 stroke=%22%230a9a72%22/%3E%3Cline x1=%22170%22 x2=%22170%22 y1=%22620%22 y2=%22685%22 stroke=%22%23e0566a%22 stroke-width=%221.4%22/%3E%3Crect x=%22163%22 y=%22632%22 width=%2214%22 height=%2245%22 rx=%221.5%22 fill=%22%23e0566a%22 fill-opacity=%22.55%22 stroke=%22%23e0566a%22/%3E%3Cline x1=%22204%22 x2=%22204%22 y1=%22628%22 y2=%22703%22 stroke=%22%230a9a72%22 stroke-width=%221.4%22/%3E%3Crect x=%22197%22 y=%22653%22 width=%2214%22 height=%2225%22 rx=%221.5%22 fill=%22%230a9a72%22 fill-opacity=%22.55%22 stroke=%22%230a9a72%22/%3E%3Cline x1=%22238%22 x2=%22238%22 y1=%22646%22 y2=%22677%22 stroke=%22%23e0566a%22 stroke-width=%221.4%22/%3E%3Crect x=%22231%22 y=%22653%22 width=%2214%22 height=%2220%22 rx=%221.5%22 fill=%22%23e0566a%22 fill-opacity=%22.55%22 stroke=%22%23e0566a%22/%3E%3Cline x1=%22272%22 x2=%22272%22 y1=%22658%22 y2=%22682%22 stroke=%22%230a9a72%22 stroke-width=%221.4%22/%3E%3Crect x=%22265%22 y=%22665%22 width=%2214%22 height=%227%22 rx=%221.5%22 fill=%22%230a9a72%22 fill-opacity=%22.55%22 stroke=%22%230a9a72%22/%3E%3Cline x1=%22306%22 x2=%22306%22 y1=%22640%22 y2=%22675%22 stroke=%22%230a9a72%22 stroke-width=%221.4%22/%3E%3Crect x=%22299%22 y=%22646%22 width=%2214%22 height=%2219%22 rx=%221.5%22 fill=%22%230a9a72%22 fill-opacity=%22.55%22 stroke=%22%230a9a72%22/%3E%3Cline x1=%22340%22 x2=%22340%22 y1=%22573%22 y2=%22664%22 stroke=%22%230a9a72%22 stroke-width=%221.4%22/%3E%3Crect x=%22333%22 y=%22581%22 width=%2214%22 height=%2265%22 rx=%221.5%22 fill=%22%230a9a72%22 fill-opacity=%22.55%22 stroke=%22%230a9a72%22/%3E%3Cline x1=%22374%22 x2=%22374%22 y1=%22570%22 y2=%22597%22 stroke=%22%23e0566a%22 stroke-width=%221.4%22/%3E%3Crect x=%22367%22 y=%22581%22 width=%2214%22 height=%2211%22 rx=%221.5%22 fill=%22%23e0566a%22 fill-opacity=%22.55%22 stroke=%22%23e0566a%22/%3E%3Cline x1=%22409%22 x2=%22409%22 y1=%22578%22 y2=%22596%22 stroke=%22%230a9a72%22 stroke-width=%221.4%22/%3E%3Crect x=%22402%22 y=%22587%22 width=%2214%22 height=%225%22 rx=%221.5%22 fill=%22%230a9a72%22 fill-opacity=%22.55%22 stroke=%22%230a9a72%22/%3E%3Cline x1=%22443%22 x2=%22443%22 y1=%22573%22 y2=%22600%22 stroke=%22%23e0566a%22 stroke-width=%221.4%22/%3E%3Crect x=%22436%22 y=%22587%22 width=%2214%22 height=%226%22 rx=%221.5%22 fill=%22%23e0566a%22 fill-opacity=%22.55%22 stroke=%22%23e0566a%22/%3E%3Cline x1=%22477%22 x2=%22477%22 y1=%22532%22 y2=%22596%22 stroke=%22%230a9a72%22 stroke-width=%221.4%22/%3E%3Crect x=%22470%22 y=%22544%22 width=%2214%22 height=%2249%22 rx=%221.5%22 fill=%22%230a9a72%22 fill-opacity=%22.55%22 stroke=%22%230a9a72%22/%3E%3Cline x1=%22511%22 x2=%22511%22 y1=%22499%22 y2=%22544%22 stroke=%22%230a9a72%22 stroke-width=%221.4%22/%3E%3Crect x=%22504%22 y=%22521%22 width=%2214%22 height=%2223%22 rx=%221.5%22 fill=%22%230a9a72%22 fill-opacity=%22.55%22 stroke=%22%230a9a72%22/%3E%3Cline x1=%22545%22 x2=%22545%22 y1=%22440%22 y2=%22526%22 stroke=%22%230a9a72%22 stroke-width=%221.4%22/%3E%3Crect x=%22538%22 y=%22469%22 width=%2214%22 height=%2252%22 rx=%221.5%22 fill=%22%230a9a72%22 fill-opacity=%22.55%22 stroke=%22%230a9a72%22/%3E%3Cline x1=%22579%22 x2=%22579%22 y1=%22452%22 y2=%22477%22 stroke=%22%230a9a72%22 stroke-width=%221.4%22/%3E%3Crect x=%22572%22 y=%22464%22 width=%2214%22 height=%226%22 rx=%221.5%22 fill=%22%230a9a72%22 fill-opacity=%22.55%22 stroke=%22%230a9a72%22/%3E%3Cline x1=%22613%22 x2=%22613%22 y1=%22435%22 y2=%22476%22 stroke=%22%230a9a72%22 stroke-width=%221.4%22/%3E%3Crect x=%22606%22 y=%22457%22 width=%2214%22 height=%227%22 rx=%221.5%22 fill=%22%230a9a72%22 fill-opacity=%22.55%22 stroke=%22%230a9a72%22/%3E%3Cline x1=%22647%22 x2=%22647%22 y1=%22412%22 y2=%22478%22 stroke=%22%230a9a72%22 stroke-width=%221.4%22/%3E%3Crect x=%22640%22 y=%22426%22 width=%2214%22 height=%2231%22 rx=%221.5%22 fill=%22%230a9a72%22 fill-opacity=%22.55%22 stroke=%22%230a9a72%22/%3E%3Cline x1=%22681%22 x2=%22681%22 y1=%22403%22 y2=%22445%22 stroke=%22%230a9a72%22 stroke-width=%221.4%22/%3E%3Crect x=%22674%22 y=%22405%22 width=%2214%22 height=%2221%22 rx=%221.5%22 fill=%22%230a9a72%22 fill-opacity=%22.55%22 stroke=%22%230a9a72%22/%3E%3Cline x1=%22715%22 x2=%22715%22 y1=%22367%22 y2=%22412%22 stroke=%22%230a9a72%22 stroke-width=%221.4%22/%3E%3Crect x=%22708%22 y=%22376%22 width=%2214%22 height=%2229%22 rx=%221.5%22 fill=%22%230a9a72%22 fill-opacity=%22.55%22 stroke=%22%230a9a72%22/%3E%3Cline x1=%22749%22 x2=%22749%22 y1=%22362%22 y2=%22416%22 stroke=%22%23e0566a%22 stroke-width=%221.4%22/%3E%3Crect x=%22742%22 y=%22376%22 width=%2214%22 height=%2232%22 rx=%221.5%22 fill=%22%23e0566a%22 fill-opacity=%22.55%22 stroke=%22%23e0566a%22/%3E%3Cline x1=%22783%22 x2=%22783%22 y1=%22328%22 y2=%22430%22 stroke=%22%230a9a72%22 stroke-width=%221.4%22/%3E%3Crect x=%22776%22 y=%22357%22 width=%2214%22 height=%2251%22 rx=%221.5%22 fill=%22%230a9a72%22 fill-opacity=%22.55%22 stroke=%22%230a9a72%22/%3E%3Cline x1=%22817%22 x2=%22817%22 y1=%22319%22 y2=%22366%22 stroke=%22%230a9a72%22 stroke-width=%221.4%22/%3E%3Crect x=%22810%22 y=%22341%22 width=%2214%22 height=%2217%22 rx=%221.5%22 fill=%22%230a9a72%22 fill-opacity=%22.55%22 stroke=%22%230a9a72%22/%3E%3Cline x1=%22851%22 x2=%22851%22 y1=%22304%22 y2=%22399%22 stroke=%22%23e0566a%22 stroke-width=%221.4%22/%3E%3Crect x=%22844%22 y=%22341%22 width=%2214%22 height=%2253%22 rx=%221.5%22 fill=%22%23e0566a%22 fill-opacity=%22.55%22 stroke=%22%23e0566a%22/%3E%3Cline x1=%22885%22 x2=%22885%22 y1=%22377%22 y2=%22423%22 stroke=%22%23e0566a%22 stroke-width=%221.4%22/%3E%3Crect x=%22878%22 y=%22394%22 width=%2214%22 height=%2215%22 rx=%221.5%22 fill=%22%23e0566a%22 fill-opacity=%22.55%22 stroke=%22%23e0566a%22/%3E%3Cline x1=%22919%22 x2=%22919%22 y1=%22362%22 y2=%22412%22 stroke=%22%230a9a72%22 stroke-width=%221.4%22/%3E%3Crect x=%22912%22 y=%22364%22 width=%2214%22 height=%2245%22 rx=%221.5%22 fill=%22%230a9a72%22 fill-opacity=%22.55%22 stroke=%22%230a9a72%22/%3E%3Cline x1=%22953%22 x2=%22953%22 y1=%22317%22 y2=%22373%22 stroke=%22%230a9a72%22 stroke-width=%221.4%22/%3E%3Crect x=%22946%22 y=%22341%22 width=%2214%22 height=%2223%22 rx=%221.5%22 fill=%22%230a9a72%22 fill-opacity=%22.55%22 stroke=%22%230a9a72%22/%3E%3Cline x1=%22987%22 x2=%22987%22 y1=%22307%22 y2=%22364%22 stroke=%22%230a9a72%22 stroke-width=%221.4%22/%3E%3Crect x=%22980%22 y=%22315%22 width=%2214%22 height=%2226%22 rx=%221.5%22 fill=%22%230a9a72%22 fill-opacity=%22.55%22 stroke=%22%230a9a72%22/%3E%3Cline x1=%221021%22 x2=%221021%22 y1=%22250%22 y2=%22323%22 stroke=%22%230a9a72%22 stroke-width=%221.4%22/%3E%3Crect x=%221014%22 y=%22264%22 width=%2214%22 height=%2251%22 rx=%221.5%22 fill=%22%230a9a72%22 fill-opacity=%22.55%22 stroke=%22%230a9a72%22/%3E%3Cline x1=%221055%22 x2=%221055%22 y1=%22255%22 y2=%22332%22 stroke=%22%23e0566a%22 stroke-width=%221.4%22/%3E%3Crect x=%221048%22 y=%22264%22 width=%2214%22 height=%2255%22 rx=%221.5%22 fill=%22%23e0566a%22 fill-opacity=%22.55%22 stroke=%22%23e0566a%22/%3E%3Cline x1=%221089%22 x2=%221089%22 y1=%22317%22 y2=%22385%22 stroke=%22%23e0566a%22 stroke-width=%221.4%22/%3E%3Crect x=%221082%22 y=%22319%22 width=%2214%22 height=%2250%22 rx=%221.5%22 fill=%22%23e0566a%22 fill-opacity=%22.55%22 stroke=%22%23e0566a%22/%3E%3Cline x1=%221123%22 x2=%221123%22 y1=%22346%22 y2=%22411%22 stroke=%22%23e0566a%22 stroke-width=%221.4%22/%3E%3Crect x=%221116%22 y=%22370%22 width=%2214%22 height=%2234%22 rx=%221.5%22 fill=%22%23e0566a%22 fill-opacity=%22.55%22 stroke=%22%23e0566a%22/%3E%3Cline x1=%221157%22 x2=%221157%22 y1=%22394%22 y2=%22413%22 stroke=%22%230a9a72%22 stroke-width=%221.4%22/%3E%3Crect x=%221150%22 y=%22399%22 width=%2214%22 height=%224%22 rx=%221.5%22 fill=%22%230a9a72%22 fill-opacity=%22.55%22 stroke=%22%230a9a72%22/%3E%3Cline x1=%221191%22 x2=%221191%22 y1=%22370%22 y2=%22409%22 stroke=%22%230a9a72%22 stroke-width=%221.4%22/%3E%3Crect x=%221184%22 y=%22386%22 width=%2214%22 height=%2213%22 rx=%221.5%22 fill=%22%230a9a72%22 fill-opacity=%22.55%22 stroke=%22%230a9a72%22/%3E%3Cline x1=%221226%22 x2=%221226%22 y1=%22371%22 y2=%22391%22 stroke=%22%23e0566a%22 stroke-width=%221.4%22/%3E%3Crect x=%221219%22 y=%22386%22 width=%2214%22 height=%225%22 rx=%221.5%22 fill=%22%23e0566a%22 fill-opacity=%22.55%22 stroke=%22%23e0566a%22/%3E%3Cline x1=%221260%22 x2=%221260%22 y1=%22377%22 y2=%22432%22 stroke=%22%23e0566a%22 stroke-width=%221.4%22/%3E%3Crect x=%221253%22 y=%22391%22 width=%2214%22 height=%2220%22 rx=%221.5%22 fill=%22%23e0566a%22 fill-opacity=%22.55%22 stroke=%22%23e0566a%22/%3E%3Cline x1=%221294%22 x2=%221294%22 y1=%22390%22 y2=%22418%22 stroke=%22%23e0566a%22 stroke-width=%221.4%22/%3E%3Crect x=%221287%22 y=%22411%22 width=%2214%22 height=%226%22 rx=%221.5%22 fill=%22%23e0566a%22 fill-opacity=%22.55%22 stroke=%22%23e0566a%22/%3E%3Cline x1=%221328%22 x2=%221328%22 y1=%22408%22 y2=%22437%22 stroke=%22%230a9a72%22 stroke-width=%221.4%22/%3E%3Crect x=%221321%22 y=%22412%22 width=%2214%22 height=%224%22 rx=%221.5%22 fill=%22%230a9a72%22 fill-opacity=%22.55%22 stroke=%22%230a9a72%22/%3E%3Cline x1=%221362%22 x2=%221362%22 y1=%22394%22 y2=%22455%22 stroke=%22%23e0566a%22 stroke-width=%221.4%22/%3E%3Crect x=%221355%22 y=%22412%22 width=%2214%22 height=%2225%22 rx=%221.5%22 fill=%22%23e0566a%22 fill-opacity=%22.55%22 stroke=%22%23e0566a%22/%3E%3Cline x1=%221396%22 x2=%221396%22 y1=%22427%22 y2=%22470%22 stroke=%22%23e0566a%22 stroke-width=%221.4%22/%3E%3Crect x=%221389%22 y=%22437%22 width=%2214%22 height=%2217%22 rx=%221.5%22 fill=%22%23e0566a%22 fill-opacity=%22.55%22 stroke=%22%23e0566a%22/%3E%3Cline x1=%221430%22 x2=%221430%22 y1=%22411%22 y2=%22455%22 stroke=%22%230a9a72%22 stroke-width=%221.4%22/%3E%3Crect x=%221423%22 y=%22416%22 width=%2214%22 height=%2237%22 rx=%221.5%22 fill=%22%230a9a72%22 fill-opacity=%22.55%22 stroke=%22%230a9a72%22/%3E%3Cline x1=%221464%22 x2=%221464%22 y1=%22394%22 y2=%22419%22 stroke=%22%230a9a72%22 stroke-width=%221.4%22/%3E%3Crect x=%221457%22 y=%22402%22 width=%2214%22 height=%2214%22 rx=%221.5%22 fill=%22%230a9a72%22 fill-opacity=%22.55%22 stroke=%22%230a9a72%22/%3E%3Cline x1=%221498%22 x2=%221498%22 y1=%22376%22 y2=%22402%22 stroke=%22%230a9a72%22 stroke-width=%221.4%22/%3E%3Crect x=%221491%22 y=%22384%22 width=%2214%22 height=%2218%22 rx=%221.5%22 fill=%22%230a9a72%22 fill-opacity=%22.55%22 stroke=%22%230a9a72%22/%3E%3Cline x1=%221532%22 x2=%221532%22 y1=%22342%22 y2=%22414%22 stroke=%22%230a9a72%22 stroke-width=%221.4%22/%3E%3Crect x=%221525%22 y=%22350%22 width=%2214%22 height=%2234%22 rx=%221.5%22 fill=%22%230a9a72%22 fill-opacity=%22.55%22 stroke=%22%230a9a72%22/%3E%3Cline x1=%221566%22 x2=%221566%22 y1=%22325%22 y2=%22356%22 stroke=%22%230a9a72%22 stroke-width=%221.4%22/%3E%3Crect x=%221559%22 y=%22331%22 width=%2214%22 height=%2220%22 rx=%221.5%22 fill=%22%230a9a72%22 fill-opacity=%22.55%22 stroke=%22%230a9a72%22/%3E%3C/g%3E%3Cpath d=%22M34,660 L68,660 L102,653 L136,641 L170,637 L204,632 L238,625 L272,625 L306,627 L340,619 L374,604 L409,589 L443,573 L477,556 L511,539 L545,521 L579,496 L613,470 L647,445 L681,422 L715,401 L749,386 L783,371 L817,352 L851,342 L885,345 L919,343 L953,337 L987,333 L1021,317 L1055,295 L1089,287 L1123,294 L1157,309 L1191,329 L1226,349 L1260,360 L1294,365 L1328,368 L1362,374 L1396,386 L1430,392 L1464,392 L1498,387 L1532,376 L1566,355%22 fill=%22none%22 stroke=%22%230b86b8%22 stroke-width=%222.2%22 stroke-opacity=%220.5%22 stroke-linejoin=%22round%22 stroke-linecap=%22round%22/%3E%3Ccircle cx=%22238%22 cy=%22625%22 r=%2226%22 fill=%22url(%23gl)%22/%3E%3Ccircle cx=%22238%22 cy=%22625%22 r=%224.2%22 fill=%22%230ea5a4%22/%3E%3Ccircle cx=%22238%22 cy=%22625%22 r=%228%22 fill=%22none%22 stroke=%22%230ea5a4%22 stroke-opacity=%22.5%22/%3E%3Ccircle cx=%22545%22 cy=%22521%22 r=%2226%22 fill=%22url(%23gl)%22/%3E%3Ccircle cx=%22545%22 cy=%22521%22 r=%224.2%22 fill=%22%230ea5a4%22/%3E%3Ccircle cx=%22545%22 cy=%22521%22 r=%228%22 fill=%22none%22 stroke=%22%230ea5a4%22 stroke-opacity=%22.5%22/%3E%3Ccircle cx=%22851%22 cy=%22342%22 r=%2226%22 fill=%22url(%23gl)%22/%3E%3Ccircle cx=%22851%22 cy=%22342%22 r=%224.2%22 fill=%22%230ea5a4%22/%3E%3Ccircle cx=%22851%22 cy=%22342%22 r=%228%22 fill=%22none%22 stroke=%22%230ea5a4%22 stroke-opacity=%22.5%22/%3E%3Ccircle cx=%221157%22 cy=%22309%22 r=%2226%22 fill=%22url(%23gl)%22/%3E%3Ccircle cx=%221157%22 cy=%22309%22 r=%224.2%22 fill=%22%230ea5a4%22/%3E%3Ccircle cx=%221157%22 cy=%22309%22 r=%228%22 fill=%22none%22 stroke=%22%230ea5a4%22 stroke-opacity=%22.5%22/%3E%3Ccircle cx=%221464%22 cy=%22392%22 r=%2226%22 fill=%22url(%23gl)%22/%3E%3Ccircle cx=%221464%22 cy=%22392%22 r=%224.2%22 fill=%22%230ea5a4%22/%3E%3Ccircle cx=%221464%22 cy=%22392%22 r=%228%22 fill=%22none%22 stroke=%22%230ea5a4%22 stroke-opacity=%22.5%22/%3E%3C/g%3E%3C/svg%3E") center bottom / max(100%, 1200px) auto no-repeat,
+        linear-gradient(rgba(70, 110, 160, 0.06) 1px, transparent 1px) 0 0 / 56px 56px,
+        linear-gradient(90deg, rgba(70, 110, 160, 0.06) 1px, transparent 1px) 0 0 / 56px 56px,
+        radial-gradient(900px 520px at 6% -6%, rgba(16, 185, 129, 0.11), transparent 62%),
+        radial-gradient(820px 580px at 100% 0%, rgba(56, 189, 248, 0.17), transparent 62%),
+        radial-gradient(760px 520px at 88% 104%, rgba(20, 184, 166, 0.11), transparent 62%),
+        linear-gradient(160deg, #ffffff 0%, #fbfaf5 40%, #eef3f8 100%);
+    opacity: 0;
+}
+
+html[data-theme="light"]::before { opacity: 0; }
+html[data-theme="light"]::after { opacity: 1; }
+
+/* ---------- 4. TYPOGRAPHY / HEADINGS ---------- */
+h2 {
+    border-left: 3px solid var(--amber);
+    border-image: linear-gradient(180deg, var(--amber), var(--blue)) 1;
+}
+.sidebar h2 { border-image: none; }
+h2, h3, h4 { color: var(--text-bright); }
+.page > p { color: var(--text-dim); }
+
+/* ---------- 5. SIDEBAR / NAVBAR ---------- */
+.sidebar {
+    background: linear-gradient(180deg, var(--head-bg), var(--glass-bg-solid)) !important;
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
+    border-right: 1px solid var(--glass-border);
+    box-shadow: 8px 0 30px rgba(0, 0, 0, 0.12);
+    z-index: 20;
+    overflow-y: auto;
+}
+.sidebar h2 { color: var(--amber); border-bottom-color: var(--glass-border); }
+.sidebar li { color: var(--text-dim); }
+:root[data-theme="light"] .sidebar li { color: var(--text); }
+.sidebar li::before { background: var(--bg-inset); border-color: var(--border-strong); color: var(--amber-dim); }
+.sidebar li:hover,
+:root[data-theme="light"] .sidebar li:hover { background: var(--row-hover); color: var(--text-bright); }
+.sidebar li.active,
+.sidebar li:active,
+:root[data-theme="light"] .sidebar li.active {
+    background: linear-gradient(90deg, var(--amber-wash), transparent);
+    color: var(--amber);
+    border-left-color: var(--amber);
+}
+:root[data-theme="light"] .sidebar { background: linear-gradient(180deg, rgba(255,255,255,0.94), rgba(240,246,251,0.92)) !important; box-shadow: 8px 0 30px rgba(16, 38, 70, 0.06); }
+:root[data-theme="light"] .sidebar li.active { color: var(--amber); }
+
+.navbar {
+    background: var(--glass-bg-solid);
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--radius-lg);
+}
+.theme-toggle {
+    background: var(--glass-bg-solid);
+    border: 1px solid var(--border-strong);
+    color: var(--text-bright);
+    border-radius: 999px;
+    padding: 7px 14px;
+    cursor: pointer;
+    font: 600 0.78rem var(--f-body, sans-serif);
+    white-space: nowrap;
+}
+.theme-toggle:hover { border-color: var(--amber); box-shadow: var(--btn-shadow-hover); }
+.logout-btn { border-radius: 999px !important; }
+:root[data-theme="light"] .logout-btn { border-color: rgba(207, 45, 68, 0.45); }
+
+/* ---------- 6. GLASS / CARD SURFACES ---------- */
+.card, .summary-card, .sector-card, .sector-monthly-card, .monthly-returns-container,
+.ai-insight, .recommendation, .chart-container, .predictive-insights, .visualization-section,
+.highlight-card, .advanced-risk-visualization, .enhanced-metrics-section,
+.predictive-insights-panel, .investment-advisor-panel, .sector-filters, .risk-filters,
+.kpi-card, .insight-card, .insight-item, .recommendation-summary-card, .recommendation-item,
+.recommendation-empty, .metric, .future-prediction-section, .prediction-card, .prediction-kpi-card,
+.chart-card, .detail-card, .matrix-placeholder, .ai-advisor-empty-state, .ai-advisor-card,
+.ai-advisor-stock-card, .feature-panel, .explain-kpi, .sentiment-stat, .news-card,
+.advisor-how-card, .advisor-safety-note, .advisor-reading-guide, .explain-summary,
+.mp-empty-state, .mp-error-state, .mp-kpi-card, .mp-gauge-card, .mp-cm-metric,
+.chat-bubble.assistant, .data-update {
+    background: var(--glass-bg) !important;
+    border-color: var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
+}
+.chart-card, .detail-card, .explain-kpi, .sentiment-stat, .advisor-safety-note,
+.advisor-reading-guide, .mp-cm-metric, .recommendation-item, .insight-item, .metric {
+    box-shadow: none;
+}
+.card:hover, .summary-card:hover, .kpi-card:hover, .highlight-card:hover, .news-card:hover,
+.ai-advisor-card:hover, .advisor-how-card:hover, .mp-kpi-card:hover, .mp-gauge-card:hover {
+    border-color: var(--glass-border-hover);
+    box-shadow: var(--glass-shadow-hover);
+}
+.kpi-card, .summary-card, .highlight-card, .news-card, .ai-advisor-card, .mp-kpi-card {
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+/* keep the coloured left accent of KPI/summary cards intact */
+.summary-card { border-left-color: var(--amber-dim); }
+
+/* AI output / insight banners: emerald→blue tint instead of amber */
+.sector-insights-card, .ai-output, .ai-message {
+    background: linear-gradient(135deg, var(--amber-wash), var(--info-wash)) !important;
+    border: 1px solid var(--border-accent);
+    box-shadow: var(--glass-shadow);
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
+}
+
+/* ---------- 7. TABLES ---------- */
+table, #sectorStockTable, #sectorMetricsTable, .enhanced-risk-table, .feature-table {
+    background: var(--glass-bg) !important;
+    border-color: var(--glass-border);
+    box-shadow: var(--glass-shadow);
+}
+th, #sectorStockTable th, #sectorMetricsTable th, #multiStockTable thead th,
+.multi-stock-table th, .feature-table th {
+    background: var(--head-bg) !important;
+    color: var(--text-dim) !important;
+    border-bottom: 1px solid var(--border-strong);
+}
+td, th { border-bottom-color: var(--border); }
+tr:hover { background: var(--row-hover) !important; }
+.low, .risk-low { background: var(--pos-wash) !important; }
+.mid, .risk-medium { background: var(--warn-wash) !important; }
+.high, .risk-high { background: var(--neg-wash) !important; }
+
+/* ---------- 8. INPUTS / SELECTS ---------- */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="button"]):not([type="submit"]),
+select, textarea {
+    background: var(--field-bg) !important;
+    color: var(--text-bright) !important;
+    border: 1px solid var(--border-strong) !important;
+    border-radius: var(--radius);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
+}
+input::placeholder, textarea::placeholder { color: var(--text-faint); opacity: 1; }
+input:not([type="checkbox"]):not([type="radio"]):focus,
+select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--amber) !important;
+    box-shadow: var(--focus-ring);
+}
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px var(--bg-inset) inset;
+    -webkit-text-fill-color: var(--text-bright);
+    caret-color: var(--text-bright);
+}
+select option { background: var(--bg-raised); color: var(--text-bright); }
+input[type="checkbox"], input[type="radio"], input[type="range"] { accent-color: var(--amber-dim); }
+:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+
+/* ---------- 9. BUTTONS ---------- */
+.data-update button, .sector-filters button, .risk-filters button, .recommendation-btn,
+.predict-button, .launch-btn, .auth-btn, .advisor-generate-btn {
+    background: var(--btn-bg) !important;
+    color: var(--btn-fg) !important;
+    border: 1px solid var(--btn-border) !important;
+    border-radius: var(--radius) !important;
+    transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+}
+.data-update button:hover, .sector-filters button:hover, .risk-filters button:hover,
+.recommendation-btn:hover, .predict-button:hover, .launch-btn:hover, .auth-btn:hover,
+.advisor-generate-btn:hover {
+    background: var(--btn-bg-hover) !important;
+    box-shadow: var(--btn-shadow-hover) !important;
+}
+.viz-btn, .export-btn, .sort-btn, .multi-stock-select-btn,
+.multi-stock-chart-toggle button, .quick-prompts button, .mm-chat-suggestions button {
+    background: var(--glass-bg-solid);
+    border-color: var(--border-strong);
+    border-radius: var(--radius);
+}
+.viz-btn.active, .multi-stock-chart-toggle button.active, .multi-stock-select-btn.active {
+    background: var(--amber-wash);
+    color: var(--amber);
+    border-color: var(--amber-dim);
+}
+.quick-prompts button:hover, .mm-chat-suggestions button:hover { border-color: var(--amber); color: var(--text-bright); }
+:root[data-theme="light"] .viz-btn.active,
+:root[data-theme="light"] .multi-stock-chart-toggle button.active { background: rgba(8,128,94,0.12); }
+
+/* ---------- 10. SEMANTIC "MEDIUM / AVERAGE" STATES KEEP AMBER ---------- */
+.kpi-card.medium-risk-kpi, .insight-card.neutral, .orange-card,
+.ai-advisor-stock-card.risk-medium, .mp-kpi-card[data-metric="mape"] { border-left-color: var(--warn); }
+.risk-badge.medium, .confidence-badge.medium, .confidence-medium {
+    background: var(--warn-wash); color: var(--warn); border-color: rgba(251, 191, 36, 0.35);
+}
+:root[data-theme="light"] .risk-badge.medium { border-color: rgba(168, 90, 0, 0.35); }
+.mp-gauge-fill.average { stroke: var(--warn); }
+.mp-gauge-category.average { color: var(--warn); }
+.mp-legend-item.average::before { background: var(--warn); }
+.multi-stock-badge.badge-most-consistent { background: rgba(167, 139, 250, 0.15); color: var(--violet); }
+.target-card { border-left-color: var(--blue); }
+
+/* ---------- 11. AI CHAT WIDGET ---------- */
+.mm-chat-launcher { background: var(--grad-solid); box-shadow: var(--grad-shadow); }
+.mm-chat-launcher:hover { box-shadow: 0 12px 34px rgba(20, 110, 190, 0.48); }
+.mm-chat-header { background: var(--grad-solid); }
+.mm-chat-panel {
+    background: var(--bg-raised);
+    border-color: var(--glass-border);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.34), 0 0 0 1px rgba(46, 230, 176, 0.05);
+}
+:root[data-theme="light"] .mm-chat-panel { box-shadow: 0 24px 60px rgba(16, 38, 70, 0.18); }
+.mm-chat-messages { background: transparent; background-image: linear-gradient(180deg, var(--bg-inset), var(--bg)); }
+.mm-chat-message-body, .mm-chat-composer textarea { backdrop-filter: none; }
+.mm-chat-message.user .mm-chat-message-body, .mm-chat-composer button { background: var(--grad-solid); color: #fff; }
+.mm-chat-composer textarea:focus { border-color: var(--amber) !important; }
+.chat-bubble.user { background: var(--amber-wash); border-color: var(--amber-dim); }
+
+/* ---------- 12. AUTH PAGES ---------- */
+.auth-card {
+    position: relative;
+    overflow: hidden;
+    background: var(--glass-bg) !important;
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border) !important;
+    border-radius: 16px !important;
+    box-shadow: var(--glass-shadow), 0 0 60px rgba(34, 229, 168, 0.07);
+}
+.auth-card::before {
+    content: "";
+    position: absolute; inset: 0 0 auto 0; height: 3px;
+    background: linear-gradient(90deg, var(--amber), var(--cyan), var(--blue));
+}
+.auth-header h1 {
+    background: linear-gradient(90deg, var(--amber), var(--cyan) 60%, var(--blue));
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+}
+.auth-header p, .auth-links p { color: var(--text-dim); }
+.auth-links { border-top-color: var(--border); }
+.auth-links a { color: var(--amber); }
+.error-message { background: var(--neg-wash); color: var(--neg); border-color: rgba(255, 100, 119, 0.4); }
+.form-group label { color: var(--text-dim); }
+.auth-theme-toggle { position: fixed; top: 16px; right: 16px; z-index: 30; }
+
+/* ---------- 13. MISC POLISH ---------- */
+.plotly-chart, .chart-container canvas { border-radius: var(--radius); }
+.js-plotly-plot .plotly .main-svg { background: transparent !important; }
+.js-plotly-plot .hoverlayer .hovertext rect { fill: var(--bg-raised) !important; stroke: var(--border-strong) !important; }
+.js-plotly-plot .hoverlayer .hovertext text { fill: var(--text-bright) !important; }
+.js-plotly-plot .modebar { background: transparent !important; }
+.js-plotly-plot .modebar-btn path { fill: var(--text-dim) !important; }
+.js-plotly-plot .modebar-btn:hover path { fill: var(--amber) !important; }
+
+* { scrollbar-width: thin; scrollbar-color: var(--scroll-thumb) transparent; }
+::-webkit-scrollbar { width: 9px; height: 9px; }
+::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::selection { background: rgba(46, 230, 176, 0.28); color: var(--text-bright); }
+
+/* ---------- 14. SMOOTH THEME SWITCH ---------- */
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+    transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease,
+                box-shadow 0.35s ease, fill 0.35s ease, stroke 0.35s ease !important;
+}
+html.theme-switching::before, html.theme-switching::after { transition: opacity 0.5s ease !important; }
+
+/* ---------- 15. RESPONSIVE / PERFORMANCE ---------- */
+@media (max-width: 768px) {
+    .sidebar { -webkit-backdrop-filter: none; backdrop-filter: none; position: relative; overflow: visible; }
+    .main { padding: 14px 14px 32px; }
+    .navbar { flex-wrap: wrap; gap: 10px; }
+    /* blur is costly on phones: use the (already translucent) surface without it */
+    .card, .summary-card, .kpi-card, .highlight-card, .news-card, .feature-panel, .ai-advisor-card,
+    .mp-kpi-card, .mp-gauge-card, .chart-card, .navbar, .auth-card {
+        -webkit-backdrop-filter: none; backdrop-filter: none;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    html::before, html::after, html.theme-switching * { transition: none !important; }
+}
+@media print {
+    html::before, html::after { display: none; }
+}

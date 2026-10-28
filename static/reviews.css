@@ -1,0 +1,25 @@
+
+:root{color-scheme:dark;--rv-bg:#101827;--rv-card:#182437;--rv-text:#edf3ff;--rv-muted:#a9b7cc;--rv-border:#34445d;--rv-accent:#66aaff}html[data-theme="light"]{color-scheme:light;--rv-bg:#f3f6fb;--rv-card:#fff;--rv-text:#1c2940;--rv-muted:#617089;--rv-border:#d5deeb;--rv-accent:#1769c2}*{box-sizing:border-box}body.reviews-page{margin:0;background:var(--rv-bg);color:var(--rv-text);font:16px/1.5 system-ui,Arial,sans-serif}.review-shell{max-width:850px;margin:30px auto;padding:20px}.review-shell.wide{max-width:1250px}.review-shell.narrow{max-width:500px}.review-shell a{color:var(--rv-accent)}h1{font-size:clamp(1.8rem,4vw,2.5rem);margin:.6em 0 .1em}h2{margin-top:0}.muted{color:var(--rv-muted)}.small{font-size:.88rem}.review-card{background:var(--rv-card);border:1px solid var(--rv-border);border-radius:16px;padding:24px;margin:22px 0;box-shadow:0 8px 28px #00000012}.review-card label{display:block;font-weight:650;margin:17px 0 7px}.review-card input,.review-card textarea,.review-card select,.filters input,.filters select{width:100%;padding:11px 12px;border:1px solid var(--rv-border);border-radius:8px;background:var(--rv-bg);color:var(--rv-text);font:inherit}.review-card textarea{resize:vertical}.required{color:#ff7777}.star-row{display:flex;align-items:center;gap:5px;flex-wrap:wrap}.star,.mini-stars button{border:0;background:transparent;color:#7e8aa0;font-size:28px;cursor:pointer;padding:1px 3px}.star.active,.mini-stars button.active{color:#ffbf36}.star-row span{color:var(--rv-muted);font-size:.9rem;margin-left:8px}.feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}.feature-rating{border:1px solid var(--rv-border);border-radius:10px;padding:10px}.feature-rating label{font-size:.92rem;margin:0}.mini-stars button{font-size:21px}.primary,.button-link,button{cursor:pointer;border:1px solid var(--rv-border);border-radius:8px;padding:10px 14px;background:var(--rv-card);color:var(--rv-text);font:inherit}.primary,.button-link{background:var(--rv-accent);color:white;border-color:transparent;text-decoration:none;display:inline-block}.primary{margin-top:15px}.error{color:#ff8585}#formMessage{font-weight:600}.community-review{padding:15px 0;border-bottom:1px solid var(--rv-border)}.community-review:last-child{border-bottom:0}.community-review p{white-space:pre-wrap;overflow-wrap:anywhere}.review-stars{color:#ffbf36}.admin-header{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}.stat-card{padding:16px;border:1px solid var(--rv-border);background:var(--rv-card);border-radius:12px}.stat-card strong{display:block;font-size:1.8rem}.filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px;margin:14px 0}.admin-review{border-top:1px solid var(--rv-border);padding:16px 0;overflow-wrap:anywhere}.admin-review p{white-space:pre-wrap}.admin-actions{display:flex;gap:8px;flex-wrap:wrap}.pill{display:inline-block;border:1px solid var(--rv-border);border-radius:20px;padding:3px 8px;font-size:.82rem;margin:2px}.pagination{display:flex;align-items:center;justify-content:center;gap:15px;margin:15px}.bar-row{margin:8px 0}.bar{height:8px;background:var(--rv-border);border-radius:10px;overflow:hidden}.bar span{display:block;height:100%;background:var(--rv-accent)}@media(max-width:600px){.review-shell{padding:12px;margin:10px auto}.review-card{padding:16px}.admin-header{align-items:flex-start}}
+a.button-link {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    min-width: 130px;
+    min-height: 48px;
+    padding: 12px 20px;
+    background-color: #2563eb !important;
+    color: #ffffff !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    border: 1px solid #2563eb;
+    border-radius: 8px;
+    box-sizing: border-box;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+a.button-link:hover {
+    background-color: #1d4ed8 !important;
+    color: #ffffff !important;
+}

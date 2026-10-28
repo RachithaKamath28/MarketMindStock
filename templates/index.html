@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Stock Market Analysis</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='model_performance.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('marketmind-theme')||'dark'}catch(e){document.documentElement.dataset.theme='dark'}</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+</head>
+
+<body>
+
+<!-- 🔷 SIDEBAR -->
+<div class="sidebar">
+    <h2>MARKETMIND<span style="color:var(--text-dim); font-size:0.6em; letter-spacing:0.1em;"> // TERMINAL</span></h2>
+    <ul>
+        <li onclick="showPage('dashboard')">Dashboard</li>
+        <li onclick="showPage('sector')">Sector Analysis</li>
+        <li onclick="showPage('multiStock')">Multi-Stock Analysis</li>
+        <li onclick="showPage('risk')">Risk Analysis</li>
+        <li onclick="showPage('futurePrediction')">Future Prediction</li>
+        <li onclick="showPage('portfolio')">Portfolio Optimization</li>
+        <li onclick="showPage('aiAdvisor')">🤖 Investment Advisor</li>
+        <li onclick="showPage('explainableAI')">🧠 Explainable AI</li>
+        <li onclick="showPage('newsSentiment')">📰 News Sentiment</li>
+        <li onclick="showPage('modelPerformance')">📐 Model Performance</li>
+        <li><a href="/reviews" style="color:inherit;text-decoration:none;display:block;">  ⭐⭐⭐ Rate Market Mind</a></li>
+    </ul>
+    <div class="data-update">
+        <h3>Update Data</h3>
+        <input type="text" id="startDate" placeholder="MM/DD/YYYY" value="">
+        <button onclick="updateData()">Update</button>
+    </div>
+</div>
+
+<!-- 🔷 MAIN CONTENT -->
+<div class="main">
+
+    <!-- 🔹 NAVBAR -->
+    <div class="navbar">
+        <div class="navbar-left">
+            <span>Welcome, {{ session.username }}!</span>
+            <span id="budgetModeIndicator" class="budget-mode-indicator" style="display:none;"></span>
+        </div>
+        <div class="navbar-right">
+            <button type="button" id="themeToggle" class="theme-toggle" aria-label="Switch to light mode" title="Switch theme">☀️ Light mode</button>
+            <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+        </div>
+    </div>
+
+    <!-- 🟢 DASHBOARD -->
+    <div id="dashboard" class="page active">
+        <h2>📊 Dashboard Overview</h2>
+        <p>Live overview built from IT, Banking, Pharma and FMCG sector data.</p>
+
+        <div class="enhanced-risk-kpi-grid">
+            <div class="kpi-card volatility-kpi">
+                <div class="kpi-icon">📦</div>
+                <div class="kpi-content">
+                    <div class="kpi-title">Total Stocks</div>
+                    <div class="kpi-value" id="dashTotalStocks">-</div>
+                    <div class="kpi-subtitle">Across core sectors</div>
+                </div>
+            </div>
+            <div class="kpi-card low-risk-kpi">
+                <div class="kpi-icon">📈</div>
+                <div class="kpi-content">
+                    <div class="kpi-title">Average Return</div>
+                    <div class="kpi-value" id="dashAverageReturn">-</div>
+                    <div class="kpi-subtitle">All tracked stocks</div>
+                </div>
+            </div>
+            <div class="kpi-card high-risk-kpi">
+                <div class="kpi-icon">🏆</div>
+                <div class="kpi-content">
+                    <div class="kpi-title">Top Performer</div>
+                    <div class="kpi-value" id="dashTopStock">-</div>
+                    <div class="kpi-subtitle" id="dashTopStockReturn">-</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="advanced-risk-visualization">
+            <div class="visualization-header">
+                <h3>📉 Sector Trend (Monthly Avg Return)</h3>
+            </div>
+            <div class="chart-container-3d">
+                <canvas id="dashboardTrendChart" width="900" height="380"></canvas>
+            </div>
+        </div>
+
+        <div class="advanced-risk-visualization">
+            <div class="visualization-header">
+                <h3>📊 Sector Comparison</h3>
+            </div>
+            <div class="chart-container-3d">
+                <canvas id="dashboardComparisonChart" width="900" height="380"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ⭐ SECTOR ANALYSIS -->
+    <div id="sector" class="page">
+        <h2>⭐ Sector Analysis</h2>
+        <p>Select a sector below to compare stocks and identify the best performer.</p>
+
+        <div class="sector-filters">
+            <label for="sectorSelect">Choose Sector:</label>
+            <select id="sectorSelect">
+                <option value="">-- Select Sector --</option>
+                <option value="IT">IT</option>
+                <option value="Banking">Banking</option>
+                <option value="Pharma">Pharma</option>
+                <option value="FMCG">FMCG</option>
+            </select>
+            <button onclick="loadSectorAnalysis()">Analyze</button>
+        </div>
+
+        <div id="sectorContent" style="display: none;">
+            <div class="sector-summary-cards">
+                <div class="summary-card">
+                    <h4>Best Stock</h4>
+                    <p id="bestSectorStock">-</p>
+                </div>
+                <div class="summary-card">
+                    <h4>Average Return</h4>
+                    <p id="sectorAvgReturn">-</p>
+                </div>
+                <div class="summary-card">
+                    <h4>Risk Level</h4>
+                    <p id="sectorRiskLevel">-</p>
+                </div>
+                <div class="summary-card">
+                    <h4>Avg Volatility</h4>
+                    <p id="sectorAvgVolatility">-</p>
+                </div>
+            </div>
+
+            <h3>Performance Comparison</h3>
+            <canvas id="sectorChart" width="400" height="200"></canvas>
+
+            <h3>Monthly Returns Trend</h3>
+            <div class="monthly-returns-container">
+                <canvas id="monthlyReturnsChart" width="400" height="200"></canvas>
+            </div>
+
+            <h3>Detailed Stock Metrics</h3>
+            <table id="sectorMetricsTable">
+                <thead>
+                    <tr>
+                        <th>Stock</th>
+                        <th>Return (%)</th>
+                        <th>Avg Price</th>
+                        <th>Volatility</th>
+                        <th>Latest Close</th>
+                    </tr>
+                </thead>
+                <tbody id="sectorMetricsBody"></tbody>
+            </table>
+
+            <div class="ai-output">
+                <h3>🔮 Sector Intelligence</h3>
+                <p id="sectorInsight">-</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🟣 MULTI-STOCK ANALYSIS (independent module, not merged with Sector Analysis) -->
+    <div id="multiStock" class="page">
+        <h2>🟣 Multi-Stock Analysis</h2>
+        <p>All 15 tracked stocks (IT, Banking, Pharma &amp; FMCG) are shown below. Tick any two or more, in any combination of sectors, to compare them.</p>
+
+        <div class="multi-stock-controls">
+            <div class="multi-stock-select-row">
+                <button id="multiStockSelectAll" type="button" class="multi-stock-select-btn">Select All 15</button>
+                <button id="multiStockClearAll" type="button" class="multi-stock-select-btn">Clear Selection</button>
+            </div>
+            <div class="multi-stock-date-row">
+                <label>From <input type="date" id="multiStockStartDate"></label>
+                <label>To <input type="date" id="multiStockEndDate"></label>
+            </div>
+        </div>
+
+        <div class="multi-stock-table-wrapper">
+            <table id="multiStockTable">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Symbol</th>
+                        <th>Sector</th>
+                        <th>Price</th>
+                        <th>Day Change</th>
+                    </tr>
+                </thead>
+                <tbody id="multiStockTableBody">
+                    <tr><td colspan="5" class="multi-stock-loading">Loading live quotes…</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="multiStockEmptyState" class="multi-stock-empty-state">
+            Select two or more stocks above (any sector combination) to view comparison charts and the metrics table.
+        </div>
+
+        <div id="multiStockResults" style="display:none;">
+            <h3 class="multi-stock-section-title" id="multiStockChartSectionTitle">Historical &amp; Predicted Price Trend</h3>
+
+            <div class="multi-stock-viz-controls">
+                <div class="multi-stock-chart-toggle" id="multiStockVizToggle">
+                    <button data-viz-type="line" class="active" title="Historical and predicted price trends">📈 Line Graph</button>
+                    <button data-viz-type="pie" title="Proportional comparison across selected stocks">🥧 Pie Chart</button>
+                </div>
+
+                <div class="multi-stock-metric-row" id="multiStockMetricRow" style="display:none;">
+                    <label>Metric
+                        <select id="multiStockMetricSelect"></select>
+                    </label>
+                </div>
+            </div>
+
+            <div class="chart-container-3d">
+                <div id="multiStockChart"></div>
+            </div>
+
+            <h3 class="multi-stock-section-title">Comparison Table</h3>
+            <div id="multiStockComparisonTable"></div>
+        </div>
+    </div>
+
+    <!-- ⚖️ RISK ANALYSIS -->
+    <div id="risk" class="page risk-page">
+        <div class="risk-header">
+            <div>
+                <h2>Risk Analysis</h2>
+            </div>
+        </div>
+
+        <div class="risk-filters">
+            <label for="riskSectorSelect">Choose Sector:</label>
+            <select id="riskSectorSelect">
+                <option value="">-- Select Sector --</option>
+                <option value="All">All Sectors</option>
+                <option value="IT">IT</option>
+                <option value="Banking">Banking</option>
+                <option value="Pharma">Pharma</option>
+                <option value="FMCG">FMCG</option>
+            </select>
+            <button onclick="loadRiskAnalysis()">Analyze Risk</button>
+        </div>
+
+        <div id="riskContent" style="display: none;">
+            <div id="overview" class="risk-section active">
+                <!-- Enhanced KPI Cards -->
+                <div class="enhanced-risk-kpi-grid">
+                    <div class="kpi-card low-risk-kpi">
+                        <div class="kpi-icon">🛡️</div>
+                        <div class="kpi-content">
+                            <div class="kpi-title">Low Risk</div>
+                            <div class="kpi-value" id="lowRiskCount">-</div>
+                            <div class="kpi-subtitle">Stable Stocks</div>
+                        </div>
+                    </div>
+                    <div class="kpi-card medium-risk-kpi">
+                        <div class="kpi-icon">⚖️</div>
+                        <div class="kpi-content">
+                            <div class="kpi-title">Medium Risk</div>
+                            <div class="kpi-value" id="mediumRiskCount">-</div>
+                            <div class="kpi-subtitle">Balanced Risk</div>
+                        </div>
+                    </div>
+                    <div class="kpi-card high-risk-kpi">
+                        <div class="kpi-icon">⚡</div>
+                        <div class="kpi-content">
+                            <div class="kpi-title">High Risk</div>
+                            <div class="kpi-value" id="highRiskCount">-</div>
+                            <div class="kpi-subtitle">Volatile Stocks</div>
+                        </div>
+                    </div>
+                    <div class="kpi-card volatility-kpi">
+                        <div class="kpi-icon">📊</div>
+                        <div class="kpi-content">
+                            <div class="kpi-title">Avg Volatility</div>
+                            <div class="kpi-value" id="avgVolatility">-</div>
+                            <div class="kpi-subtitle">Risk Level</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sector Insights Card -->
+                <div class="sector-insights-card">
+                    <div class="insights-header">
+                        <h3>🎯 Sector Intelligence</h3>
+                        <div class="sector-sentiment" id="sectorSentiment">
+                            <span class="sentiment-indicator" id="sentimentIndicator"></span>
+                            <span class="sentiment-text" id="sentimentText">-</span>
+                        </div>
+                    </div>
+                    <div class="insights-content">
+                        <div class="insight-metric">
+                            <span class="metric-label">Risk Profile:</span>
+                            <span class="metric-value" id="riskProfile">-</span>
+                        </div>
+                        <div class="insight-metric">
+                            <span class="metric-label">Market Outlook:</span>
+                            <span class="metric-value" id="marketOutlook">-</span>
+                        </div>
+                        <div class="insight-description" id="insightDescription">
+                            Loading sector analysis...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Key Highlights -->
+                <div class="enhanced-highlights-row">
+                    <div class="highlight-card safest-enhanced">
+                        <div class="highlight-header">
+                            <div class="highlight-icon">🛡️</div>
+                            <div class="highlight-title">Safest Stock</div>
+                        </div>
+                        <div class="highlight-content">
+                            <div class="highlight-name" id="safestStock">-</div>
+                            <div class="highlight-metrics">
+                                <div class="metric-item">
+                                    <span class="metric-label">Volatility:</span>
+                                    <span class="metric-value" id="safestVolatility">-</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">Return:</span>
+                                    <span class="metric-value" id="safestReturn">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="highlight-card riskiest-enhanced">
+                        <div class="highlight-header">
+                            <div class="highlight-icon">⚡</div>
+                            <div class="highlight-title">Riskiest Stock</div>
+                        </div>
+                        <div class="highlight-content">
+                            <div class="highlight-name" id="riskiestStock">-</div>
+                            <div class="highlight-metrics">
+                                <div class="metric-item">
+                                    <span class="metric-label">Volatility:</span>
+                                    <span class="metric-value" id="riskiestVolatility">-</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">Return:</span>
+                                    <span class="metric-value" id="riskiestReturn">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="highlight-card performance-enhanced">
+                        <div class="highlight-header">
+                            <div class="highlight-icon">📈</div>
+                            <div class="highlight-title">Sector Performance</div>
+                        </div>
+                        <div class="highlight-content">
+                            <div class="performance-metric">
+                                <span class="metric-label">Avg Return:</span>
+                                <span class="metric-value" id="avgReturn">-</span>
+                            </div>
+                            <div class="performance-metric">
+                                <span class="metric-label">Total Stocks:</span>
+                                <span class="metric-value" id="totalStocks">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Risk Visualization -->
+                <div class="advanced-risk-visualization">
+                    <div class="visualization-header">
+                        <h3>🎯 Risk vs Return Analysis</h3>
+                        <div class="visualization-controls">
+                            <button class="viz-btn active" onclick="switchRiskVisualization('scatter', this)">3D Scatter</button>
+                            <button class="viz-btn" onclick="switchRiskVisualization('bubble', this)">Bubble Chart</button>
+                            <button class="viz-btn" onclick="switchRiskVisualization('heatmap', this)">Risk Heatmap</button>
+                        </div>
+                    </div>
+                    <div class="chart-container-3d">
+                        <canvas id="riskReturnChart3D" width="900" height="400"></canvas>
+                    </div>
+                </div>
+
+                <!-- Enhanced Risk Metrics Table -->
+                <div class="enhanced-metrics-section">
+                    <div class="metrics-header">
+                        <h3>� Comprehensive Risk Metrics</h3>
+                        <div class="table-controls">
+                        </div>
+                    </div>
+                    <div class="table-container-enhanced">
+                        <table id="enhancedRiskTable" class="enhanced-risk-table">
+                            <thead>
+                                <tr>
+                                    <th onclick="sortTable(0)">Stock ↕</th>
+                                    <th onclick="sortTable(1)">Risk Category ↕</th>
+                                    <th onclick="sortTable(2)">Volatility ↕</th>
+                                    <th onclick="sortTable(3)">Return % ↕</th>
+                                    <th onclick="sortTable(4)">Sharpe Ratio ↕</th>
+                                    <th onclick="sortTable(5)">Max Drawdown ↕</th>
+                                    <th onclick="sortTable(6)">VaR (5%) ↕</th>
+                                    <th onclick="sortTable(7)">Predictive Trend ↕</th>
+                                    <th onclick="sortTable(8)">Confidence ↕</th>
+                                </tr>
+                            </thead>
+                            <tbody id="enhancedRiskTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Predictive Insights Panel -->
+                <div class="predictive-insights-panel">
+                    <div class="insights-panel-header">
+                        <h3>🔮Predictive Insights</h3>
+                        <div class="confidence-summary" id="confidenceSummary">
+                            <span class="confidence-high">High: <span id="highConfCount">0</span></span>
+                            <span class="confidence-medium">Medium: <span id="mediumConfCount">0</span></span>
+                            <span class="confidence-low">Low: <span id="lowConfCount">0</span></span>
+                        </div>
+                    </div>
+                    <div class="insights-grid" id="insightsGrid">
+                        <!-- Predictive insights will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="matrix" class="risk-section" style="display:none;">
+                <div class="matrix-placeholder">
+                    <h3>Risk Matrix</h3>
+                    <p>Matrix analysis will appear here once you analyze a sector.</p>
+                </div>
+            </div>
+
+            <div id="prediction" class="risk-section" style="display:none;">
+                <div class="matrix-placeholder">
+                    <h3>Price Prediction</h3>
+                    <p>Price prediction charts and confidence signals will appear here.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- � FUTURE PREDICTION -->
+    <div id="futurePrediction" class="page">
+        <h2>🔮 Future Prediction</h2>
+        <p>Forecasted stock performance for the next 5 years across IT, Banking and Pharma.</p>
+
+        <div class="sector-filters">
+            <label for="futureSectorSelect">Choose Sector:</label>
+            <select id="futureSectorSelect">
+                <option value="All">All Sectors</option>
+                <option value="IT">IT</option>
+                <option value="Banking">Banking</option>
+                <option value="Pharma">Pharma</option>
+                <option value="FMCG">FMCG</option>
+            </select>
+            <button onclick="loadFuturePrediction(document.getElementById('futureSectorSelect').value)">Load Prediction</button>
+        </div>
+
+        <div class="future-prediction-section" id="futurePredictionSection" style="display:none;">
+            <div class="prediction-header">
+                <div>
+                    <h3>Future Prediction Dashboard</h3>
+                    <p>Projected stock performance, risk, and sector trends for the next 5 years.</p>
+                </div>
+            </div>
+            <div class="prediction-kpi-grid">
+                <div class="prediction-card future-kpi-card blue-card">
+                    <h4>Predicted Growth</h4>
+                    <div class="prediction-value" id="futureGrowthPct">-</div>
+                    <div class="prediction-label">5-year growth expectation</div>
+                </div>
+                <div class="prediction-card future-kpi-card orange-card">
+                    <h4>Expected Return</h4>
+                    <div class="prediction-value" id="futureReturnPct">-</div>
+                    <div class="prediction-label">Annual return trend</div>
+                </div>
+                <div class="prediction-card future-kpi-card green-card">
+                    <h4>Projected Risk</h4>
+                    <div class="prediction-value" id="futureRiskLevel">-</div>
+                    <div class="prediction-label">Risk outlook</div>
+                </div>
+                <div class="prediction-card future-kpi-card">
+                    <h4>Top Growth Stock</h4>
+                    <div class="prediction-value" id="topGrowthStock">-</div>
+                    <div class="prediction-label" id="topGrowthMetric">-</div>
+                </div>
+                <div class="prediction-card future-kpi-card">
+                    <h4>Most Stable Stock</h4>
+                    <div class="prediction-value" id="mostStableStock">-</div>
+                    <div class="prediction-label" id="stableRiskMetric">-</div>
+                </div>
+            </div>
+            <div class="prediction-chart-row">
+                <div class="prediction-card chart-card">
+                    <h4>Historical vs Predicted Price</h4>
+                    <canvas id="predictionPriceChart"></canvas>
+                </div>
+                <div class="prediction-card chart-card" id="predictionSectorCard">
+                    <h4>Sector Future Performance</h4>
+                    <canvas id="predictionSectorChart"></canvas>
+                </div>
+            </div>
+
+            <div class="stock-prediction-section">
+                <div class="prediction-header-dashboard">
+                    <div>
+                        <h3>🔮 Stock Price Prediction</h3>
+                        <p>Predict future closing prices for selected stocks with AI-powered forecasting</p>
+                    </div>
+                </div>
+
+                <div class="stock-prediction-controls">
+                    <div class="control-group">
+                        <label for="stockPredictSelect">Select Stock:</label>
+                        <select id="stockPredictSelect">
+                            <option value="">-- Choose a Stock --</option>
+                            <option value="INFY">INFY (IT)</option>
+                            <option value="TCS">TCS (IT)</option>
+                            <option value="WIPRO">WIPRO (IT)</option>
+                            <option value="HCLTECH">HCLTECH (IT)</option>
+                            <option value="HDFCBANK">HDFCBANK (Banking)</option>
+                            <option value="SBIN">SBIN (Banking)</option>
+                            <option value="ICICIBANK">ICICIBANK (Banking)</option>
+                            <option value="AXISBANK">AXISBANK (Banking)</option>
+                            <option value="SUNPHARMA">SUNPHARMA (Pharma)</option>
+                            <option value="CIPLA">CIPLA (Pharma)</option>
+                            <option value="DRREDDY">DRREDDY (Pharma)</option>
+                            <option value="HINDUNILVR">HINDUNILVR (FMCG)</option>
+                            <option value="ITC">ITC (FMCG)</option>
+                            <option value="NESTLEIND">NESTLEIND (FMCG)</option>
+                            <option value="BRITANNIA">BRITANNIA (FMCG)</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="stockPredictPeriod">Prediction Period:</label>
+                        <select id="stockPredictPeriod">
+                            <option value="30">30 Days</option>
+                            <option value="365" selected>1 Year</option>
+                            <option value="1825">5 Years</option>
+                        </select>
+                    </div>
+
+                    <button onclick="loadStockPrediction()" class="predict-button">Generate Prediction</button>
+                </div>
+
+                <div id="stockPredictionContent" style="display: none;">
+                    <div class="stock-prediction-kpi-grid">
+                        <div class="prediction-kpi-card uptrend-card">
+                            <div class="kpi-icon">📈</div>
+                            <div class="kpi-content">
+                                <div class="kpi-title">Predicted Growth</div>
+                                <div class="kpi-value" id="stockPredGrowth">-</div>
+                                <div class="kpi-subtitle" id="stockPredGrowthLabel">Expected change</div>
+                            </div>
+                        </div>
+                        <div class="prediction-kpi-card trend-card">
+                            <div class="kpi-icon">🎯</div>
+                            <div class="kpi-content">
+                                <div class="kpi-title">Trend Direction</div>
+                                <div class="kpi-value" id="stockPredTrend">-</div>
+                                <div class="kpi-subtitle" id="stockPredTrendLabel">Market outlook</div>
+                            </div>
+                        </div>
+                        <div class="prediction-kpi-card confidence-card">
+                            <div class="kpi-icon">✓</div>
+                            <div class="kpi-content">
+                                <div class="kpi-title">Confidence Level</div>
+                                <div class="kpi-value" id="stockPredConfidence">-</div>
+                                <div class="kpi-subtitle">Model reliability</div>
+                            </div>
+                        </div>
+                        <div class="prediction-kpi-card target-card">
+                            <div class="kpi-icon">🎲</div>
+                            <div class="kpi-content">
+                                <div class="kpi-title">Target Price</div>
+                                <div class="kpi-value" id="stockPredTarget">-</div>
+                                <div class="kpi-subtitle" id="stockPredTargetLabel">Projected value</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stock-prediction-chart-section">
+                        <div class="chart-card">
+                            <h4>Historical vs Predicted Prices</h4>
+                            <canvas id="stockPredictionChart" width="900" height="300"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="stock-prediction-details">
+                        <div class="detail-card">
+                            <h4>📊 Current Market Data</h4>
+                            <div class="detail-row">
+                                <span class="detail-label">Latest Close Price:</span>
+                                <span class="detail-value" id="stockCurrentPrice">-</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Volatility:</span>
+                                <span class="detail-value" id="stockVolatility">-</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Risk Level:</span>
+                                <span class="detail-value" id="stockRiskLevel">-</span>
+                            </div>
+                        </div>
+                        <div class="detail-card">
+                            <h4>🔮 Prediction Metrics</h4>
+                            <div class="detail-row">
+                                <span class="detail-label">Projected Price:</span>
+                                <span class="detail-value" id="stockProjectedPrice">-</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Expected Return:</span>
+                                <span class="detail-value" id="stockExpectedReturn">-</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Model R²:</span>
+                                <span class="detail-value" id="stockModelR2">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="stockPrediction" class="page">
+        <h2>🔮 Stock Price Prediction</h2>
+        <p>Predict future closing prices for selected stocks with AI-powered forecasting.</p>
+
+        <div class="stock-prediction-section">
+            <div class="stock-prediction-controls">
+                <div class="control-group">
+                    <label for="stockPredictSelect">Select Stock:</label>
+                    <select id="stockPredictSelect">
+                        <option value="">-- Choose a Stock --</option>
+                        <option value="INFY">INFY (IT)</option>
+                        <option value="TCS">TCS (IT)</option>
+                        <option value="WIPRO">WIPRO (IT)</option>
+                        <option value="HCLTECH">HCLTECH (IT)</option>
+                        <option value="HDFCBANK">HDFCBANK (Banking)</option>
+                        <option value="SBIN">SBIN (Banking)</option>
+                        <option value="ICICIBANK">ICICIBANK (Banking)</option>
+                        <option value="AXISBANK">AXISBANK (Banking)</option>
+                        <option value="SUNPHARMA">SUNPHARMA (Pharma)</option>
+                        <option value="CIPLA">CIPLA (Pharma)</option>
+                        <option value="DRREDDY">DRREDDY (Pharma)</option>
+                        <option value="HINDUNILVR">HINDUNILVR (FMCG)</option>
+                        <option value="ITC">ITC (FMCG)</option>
+                        <option value="NESTLEIND">NESTLEIND (FMCG)</option>
+                        <option value="BRITANNIA">BRITANNIA (FMCG)</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="stockPredictPeriod">Prediction Period:</label>
+                    <select id="stockPredictPeriod">
+                        <option value="30">30 Days</option>
+                        <option value="365" selected>1 Year</option>
+                        <option value="1825">5 Years</option>
+                    </select>
+                </div>
+
+                <button onclick="loadStockPrediction()" class="predict-button">Generate Prediction</button>
+            </div>
+
+            <div id="stockPredictionContent" style="display: none;">
+                <div class="stock-prediction-kpi-grid">
+                    <div class="prediction-kpi-card uptrend-card">
+                        <div class="kpi-icon">📈</div>
+                        <div class="kpi-content">
+                            <div class="kpi-title">Predicted Growth</div>
+                            <div class="kpi-value" id="stockPredGrowth">-</div>
+                            <div class="kpi-subtitle" id="stockPredGrowthLabel">Expected change</div>
+                        </div>
+                    </div>
+                    <div class="prediction-kpi-card trend-card">
+                        <div class="kpi-icon">🎯</div>
+                        <div class="kpi-content">
+                            <div class="kpi-title">Trend Direction</div>
+                            <div class="kpi-value" id="stockPredTrend">-</div>
+                            <div class="kpi-subtitle" id="stockPredTrendLabel">Market outlook</div>
+                        </div>
+                    </div>
+                    <div class="prediction-kpi-card confidence-card">
+                        <div class="kpi-icon">✓</div>
+                        <div class="kpi-content">
+                            <div class="kpi-title">Confidence Level</div>
+                            <div class="kpi-value" id="stockPredConfidence">-</div>
+                            <div class="kpi-subtitle">Model reliability</div>
+                        </div>
+                    </div>
+                    <div class="prediction-kpi-card target-card">
+                        <div class="kpi-icon">🎲</div>
+                        <div class="kpi-content">
+                            <div class="kpi-title">Target Price</div>
+                            <div class="kpi-value" id="stockPredTarget">-</div>
+                            <div class="kpi-subtitle" id="stockPredTargetLabel">Projected value</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stock-prediction-chart-section">
+                    <div class="chart-card">
+                        <h4>Historical vs Predicted Prices</h4>
+                        <canvas id="stockPredictionChart" width="900" height="300"></canvas>
+                    </div>
+                </div>
+
+                <div class="stock-prediction-details">
+                    <div class="detail-card">
+                        <h4>📊 Current Market Data</h4>
+                        <div class="detail-row">
+                            <span class="detail-label">Latest Close Price:</span>
+                            <span class="detail-value" id="stockCurrentPrice">-</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Volatility:</span>
+                            <span class="detail-value" id="stockVolatility">-</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Risk Level:</span>
+                            <span class="detail-value" id="stockRiskLevel">-</span>
+                        </div>
+                    </div>
+                    <div class="detail-card">
+                        <h4>🔮 Prediction Metrics</h4>
+                        <div class="detail-row">
+                            <span class="detail-label">Projected Price:</span>
+                            <span class="detail-value" id="stockProjectedPrice">-</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Expected Return:</span>
+                            <span class="detail-value" id="stockExpectedReturn">-</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Model R²:</span>
+                            <span class="detail-value" id="stockModelR2">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- �💼 PORTFOLIO OPTIMIZATION -->
+    <div id="portfolio" class="page">
+        <h2>💼 Portfolio Optimization</h2>
+        <p>Smart allocation simulation based on return and risk from IT, Banking, Pharma and FMCG.</p>
+
+        <div class="risk-filters">
+            <label>Refresh Portfolio Data:</label>
+            <button id="runPortfolioBtn" onclick="loadPortfolioOptimization()">Run Optimization</button>
+            <span id="portfolioRunStatus" style="font-weight:600; opacity:0.9;"></span>
+        </div>
+
+        <div id="portfolioResults" style="display: none;">
+            <div class="enhanced-highlights-row">
+                <div class="highlight-card safest-enhanced">
+                    <div class="highlight-header">
+                        <div class="highlight-icon">🏆</div>
+                        <div class="highlight-title">Best to Invest</div>
+                    </div>
+                    <div class="highlight-content">
+                        <div class="highlight-name" id="portfolioBestStock">-</div>
+                        <div class="highlight-metrics">
+                            <div class="metric-item">
+                                <span class="metric-label">Allocation:</span>
+                                <span class="metric-value" id="portfolioBestAllocation">-</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Return:</span>
+                                <span class="metric-value" id="portfolioBestReturn">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="highlight-card performance-enhanced">
+                    <div class="highlight-header">
+                        <div class="highlight-icon">🛡️</div>
+                        <div class="highlight-title">Safest Stock</div>
+                    </div>
+                    <div class="highlight-content">
+                        <div class="highlight-name" id="portfolioSafestStock">-</div>
+                        <div class="highlight-metrics">
+                            <div class="metric-item">
+                                <span class="metric-label">Volatility:</span>
+                                <span class="metric-value" id="portfolioSafestVolatility">-</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Risk:</span>
+                                <span class="metric-value" id="portfolioSafestRisk">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="advanced-risk-visualization">
+                <div class="visualization-header">
+                    <h3>🥧 Allocation Mix</h3>
+                </div>
+                <div class="chart-container-3d">
+                    <canvas id="portfolioAllocationChart" width="900" height="380"></canvas>
+                </div>
+            </div>
+
+            <div class="advanced-risk-visualization">
+                <div class="visualization-header">
+                    <h3>🎯 Risk vs Return</h3>
+                </div>
+                <div class="chart-container-3d">
+                    <canvas id="portfolioRiskReturnChart" width="900" height="380"></canvas>
+                </div>
+            </div>
+
+            <div class="enhanced-metrics-section">
+                <div class="metrics-header">
+                    <h3>Portfolio Allocation Details</h3>
+                    <span id="portfolioBudgetSummary" class="budget-summary-line" style="display:none;"></span>
+                </div>
+                <div class="table-container-enhanced">
+                    <table class="enhanced-risk-table">
+                        <thead>
+                            <tr>
+                                <th>Stock</th>
+                                <th>Sector</th>
+                                <th>Risk</th>
+                                <th>Return %</th>
+                                <th>Volatility %</th>
+                                <th>Allocation %</th>
+                                <th id="portfolioSharesHeader" style="display:none;">Shares</th>
+                                <th id="portfolioInvestedHeader" style="display:none;">Invested</th>
+                            </tr>
+                        </thead>
+                        <tbody id="portfolioAllocationBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🤖 INVESTMENT ADVISOR: guided, beginner-friendly workflow -->
+    <div id="aiAdvisor" class="page">
+        <h2>🤖 Investment Advisor</h2>
+        <p class="advisor-intro">Get a stock shortlist based on your budget, preferred risk level and sector. Follow the three steps below, then press <strong>Generate Recommendation</strong> to see the analysis.</p>
+
+        <div class="advisor-how-grid">
+            <div class="advisor-how-card"><span class="advisor-step-number">1</span><div><strong>Tell us your goal</strong><p>Choose a sector, budget and risk preference.</p></div></div>
+            <div class="advisor-how-card"><span class="advisor-step-number">2</span><div><strong>Market Mind analyzes</strong><p>It checks available historical prices, returns and volatility.</p></div></div>
+            <div class="advisor-how-card"><span class="advisor-step-number">3</span><div><strong>Understand the result</strong><p>Review the ranked stocks, estimated shares and charts.</p></div></div>
+        </div>
+
+        <div class="investment-advisor-panel advisor-input-panel">
+            <div class="advisor-panel-heading"><div><h3>Step 1 · Your investment preferences</h3><p>Example: ₹10,000 · IT · Balanced</p></div><span class="advisor-panel-icon">🧭</span></div>
+            <div class="recommendation-controls advisor-controls">
+                <label class="recommendation-field advisor-field">
+                    <span>Sector to analyze</span>
+                    <select id="advisorSectorSelect">
+                        <option value="">All Sectors — find the highest-scoring sector</option>
+                        <option value="IT">IT</option>
+                        <option value="Banking">Banking</option>
+                        <option value="Pharma">Pharma</option>
+                        <option value="FMCG">FMCG</option>
+                    </select>
+                    <small>Choose one sector, or leave All Sectors to compare them.</small>
+                </label>
+                <label class="recommendation-field advisor-field">
+                    <span>Investment budget (₹)</span>
+                    <input type="number" id="advisorBudget" min="1" step="500" placeholder="e.g. 10000" inputmode="decimal">
+                    <small>Used to estimate how many whole shares fit your budget.</small>
+                </label>
+                <label class="recommendation-field advisor-field">
+                    <span>Preferred risk level</span>
+                    <select id="advisorRisk">
+                        <option value="Low">Low Risk</option>
+                        <option value="Medium" selected>Balanced</option>
+                        <option value="High">High Growth</option>
+                    </select>
+                    <small id="advisorRiskHelp">Balanced: weighs expected return against price fluctuations.</small>
+                </label>
+                <label class="recommendation-field advisor-field">
+                    <span>From date <em>(optional)</em></span>
+                    <input type="date" id="advisorStartDate">
+                    <small>Leave blank to use available history.</small>
+                </label>
+                <label class="recommendation-field advisor-field">
+                    <span>To date <em>(optional)</em></span>
+                    <input type="date" id="advisorEndDate">
+                    <small>Use a range with enough historical data.</small>
+                </label>
+            </div>
+            <button type="button" onclick="loadAIAdvisor()" class="recommendation-btn advisor-generate-btn" id="advisorGenerateButton">✨ Generate Recommendation</button>
+            <p class="advisor-safety-note"><strong>Before you start:</strong> this is an educational analysis tool, not a guarantee of profit. Predictions can be wrong and stock prices can fall.</p>
+
+            <div id="advisorEmptyState" class="ai-advisor-empty-state advisor-welcome-state">
+                <div class="advisor-welcome-icon">📊</div>
+                <h3>Your analysis will appear here</h3>
+                <p>Choose your preferences above and click <strong>Generate Recommendation</strong>. You will then see the recommended sector, stock cards, budget estimates and charts.</p>
+            </div>
+
+            <div id="advisorResults" style="display:none;">
+                <div class="advisor-results-heading"><div><h3>Step 2 · Your analysis results</h3><p>Read the summary first, then compare the individual stock cards.</p></div><span class="advisor-results-label">MODEL-BASED ESTIMATE</span></div>
+                <div class="ai-advisor-card" id="advisorSectorCard">
+                    <div class="ai-advisor-card-header">
+                        <div class="ai-advisor-badge" id="advisorSectorBadge">Recommended Sector</div>
+                        <div class="ai-advisor-sector-name" id="advisorBestSector">-</div>
+                    </div>
+                    <p class="ai-advisor-reason" id="advisorSectorReason">-</p>
+                    <div class="ai-advisor-portfolio-kpis" id="advisorPortfolioKpis" style="display:none;">
+                        <div class="metric-item"><span class="metric-label">Estimated amount invested</span><span class="metric-value" id="advisorInvested">-</span></div>
+                        <div class="metric-item"><span class="metric-label">Model-estimated value</span><span class="metric-value" id="advisorPredictedValue">-</span></div>
+                        <div class="metric-item"><span class="metric-label">Estimated difference</span><span class="metric-value" id="advisorProfit">-</span></div>
+                    </div>
+                </div>
+
+                <div class="advisor-reading-guide"><strong>How to read these numbers</strong><p><b>Current price</b> is the latest price in the available dataset. <b>Predicted price</b> is a model estimate, not a promise. <b>Expected return</b> is the model's projected percentage change. <b>Risk</b> is estimated from historical and predicted volatility. <b>Shares</b> are whole-share estimates based on the budget.</p></div>
+                <h3 class="ai-advisor-section-title" id="advisorStockGridTitle">Top Stocks</h3>
+                <div class="ai-advisor-stock-grid" id="advisorStockGrid"></div>
+
+                <div class="advanced-risk-visualization">
+                    <div class="visualization-header"><h3>📈 Historical vs Predicted Trend — <span id="advisorTrendStockLabel">Top Pick</span></h3></div>
+                    <p class="advisor-chart-help">The historical line shows past prices in the dataset; the predicted line shows the model's projection.</p>
+                    <div class="chart-container-3d"><canvas id="advisorTrendChart" width="900" height="380"></canvas></div>
+                </div>
+                <div class="advanced-risk-visualization">
+                    <div class="visualization-header"><h3 id="advisorSectorChartTitle">📊 Sector Comparison (Model Score)</h3></div>
+                    <p class="advisor-chart-help">A higher model score means the stock/sector ranked better under this project's scoring rules; it does not mean profit is certain.</p>
+                    <div class="chart-container-3d"><canvas id="advisorSectorChart" width="900" height="380"></canvas></div>
+                </div>
+                <p class="ai-advisor-assumptions" id="advisorAssumptions"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🧠 EXPLAINABLE AI -->
+    <div id="explainableAI" class="page">
+        <h2>🧠 Explainable AI</h2>
+        <p>Explore the measurable factors behind a stock's recent performance and risk. This module explains the inputs; it does not claim that these factors prove future movement.</p>
+        <div class="feature-panel">
+            <div class="feature-controls"><label>Sector <select id="explainSector"><option>IT</option><option>Banking</option><option>Pharma</option><option>FMCG</option></select></label><label>Stock <select id="explainStock"></select></label><button id="explainRun" class="recommendation-btn" type="button">Explain Stock</button></div>
+            <div id="explainResult" class="feature-result"><p>Select a stock and click <strong>Explain Stock</strong> to calculate the explanation.</p></div>
+        </div>
+    </div>
+
+    <!-- 📰 NEWS SENTIMENT -->
+    <div id="newsSentiment" class="page">
+        <h2>📰 News Sentiment Analysis</h2>
+        <p>Fetch recent headlines for supported stocks and classify their language as positive, negative, or neutral. Availability depends on the external news feed.</p>
+        <div class="feature-panel">
+            <div class="feature-controls"><label>Stock <select id="newsSymbol"><option value="INFY.NS">Infosys (INFY)</option><option value="TCS.NS">TCS</option><option value="HDFCBANK.NS">HDFC Bank</option><option value="SBIN.NS">State Bank of India</option><option value="SUNPHARMA.NS">Sun Pharma</option><option value="ITC.NS">ITC</option><option value="WIPRO.NS">Wipro</option><option value="ICICIBANK.NS">ICICI Bank</option><option value="HINDUNILVR.NS">Hindustan Unilever</option></select></label><button id="newsLoad" class="recommendation-btn" type="button">Analyze Latest News</button></div>
+            <div id="newsSummary" class="sentiment-summary"></div><div id="newsResults" class="news-results"><p>Click Analyze Latest News to load available headlines.</p></div>
+            <small class="feature-note">Sentiment is a lightweight text-based estimate, not a verified measure of market impact. Headlines may be unavailable if the data provider is offline.</small>
+        </div>
+    </div>
+
+    <!-- 📐 MODEL PERFORMANCE & ACCURACY (independent module, not merged with Future Prediction) -->
+    <div id="modelPerformance" class="page">
+        <h2>📐 Model Performance &amp; Accuracy</h2>
+        <p>Walk-forward backtest of the prediction engine: how closely its forecasts have tracked real, historical closing prices for the selected stock and date range.</p>
+
+        <div class="mp-controls">
+            <label class="mp-field">
+                <span>Stock</span>
+                <select id="mpSymbolSelect"><option value="">Loading stocks…</option></select>
+            </label>
+            <label class="mp-field">
+                <span>From</span>
+                <input type="date" id="mpStartDate">
+            </label>
+            <label class="mp-field">
+                <span>To</span>
+                <input type="date" id="mpEndDate">
+            </label>
+            <button onclick="loadModelPerformance()" class="recommendation-btn">Evaluate Model</button>
+        </div>
+        <p class="mp-range-hint" id="mpRangeHint"></p>
+
+        <div id="mpEmptyState" class="mp-empty-state">Choose a stock above and click <strong>Evaluate Model</strong> to run the backtest.</div>
+        <div id="mpErrorState" class="mp-error-state" style="display:none;"></div>
+
+        <div id="mpResults" style="display:none;">
+
+            <div class="mp-kpi-grid" id="mpKpiGrid">
+                <div class="mp-kpi-card" data-metric="mae">
+                    <div class="mp-kpi-title">MAE <span class="mp-info" title="Mean Absolute Error: the average size of the price miss, in ₹, ignoring direction.">ⓘ</span></div>
+                    <div class="mp-kpi-value" id="mpMAE">-</div>
+                    <div class="mp-kpi-subtitle">Avg. ₹ error per forecast</div>
+                </div>
+                <div class="mp-kpi-card" data-metric="mse">
+                    <div class="mp-kpi-title">MSE <span class="mp-info" title="Mean Squared Error: average of squared errors. Penalizes large misses more heavily than small ones.">ⓘ</span></div>
+                    <div class="mp-kpi-value" id="mpMSE">-</div>
+                    <div class="mp-kpi-subtitle">Penalizes large misses</div>
+                </div>
+                <div class="mp-kpi-card" data-metric="rmse">
+                    <div class="mp-kpi-title">RMSE <span class="mp-info" title="Root Mean Squared Error: MSE brought back to ₹ units, so it's directly comparable to price.">ⓘ</span></div>
+                    <div class="mp-kpi-value" id="mpRMSE">-</div>
+                    <div class="mp-kpi-subtitle">Typical ₹ miss size</div>
+                </div>
+                <div class="mp-kpi-card" data-metric="mape">
+                    <div class="mp-kpi-title">MAPE <span class="mp-info" title="Mean Absolute Percentage Error: the average miss as a % of the actual price, so it's comparable across stocks of any price.">ⓘ</span></div>
+                    <div class="mp-kpi-value" id="mpMAPE">-</div>
+                    <div class="mp-kpi-subtitle">Avg. % error</div>
+                </div>
+                <div class="mp-kpi-card" data-metric="r2">
+                    <div class="mp-kpi-title">R² Score <span class="mp-info" title="R-squared: how much of the actual price movement the model's forecasts explain. 1.0 is a perfect fit, 0 is no better than the average price.">ⓘ</span></div>
+                    <div class="mp-kpi-value" id="mpR2">-</div>
+                    <div class="mp-kpi-subtitle">Variance explained</div>
+                </div>
+            </div>
+
+            <div class="mp-main-grid">
+                <div class="advanced-risk-visualization mp-span-2">
+                    <div class="visualization-header">
+                        <h3>📈 Actual vs Predicted Price</h3>
+                        <span class="mp-points-badge" id="mpPointsBadge">-</span>
+                    </div>
+                    <div class="chart-container-3d">
+                        <canvas id="mpActualPredictedChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="mp-gauge-card">
+                    <div class="visualization-header"><h3>Model Performance Score</h3></div>
+                    <div class="mp-gauge-wrap">
+                        <svg viewBox="0 0 220 140" class="mp-gauge-svg">
+                            <path d="M 20 120 A 90 90 0 0 1 200 120" class="mp-gauge-track"></path>
+                            <path d="M 20 120 A 90 90 0 0 1 200 120" class="mp-gauge-fill" id="mpGaugeFill"></path>
+                        </svg>
+                        <div class="mp-gauge-readout">
+                            <div class="mp-gauge-score" id="mpGaugeScore">-</div>
+                            <div class="mp-gauge-category" id="mpGaugeCategory">-</div>
+                        </div>
+                    </div>
+                    <div class="mp-gauge-legend">
+                        <span class="mp-legend-item poor">Poor</span>
+                        <span class="mp-legend-item average">Average</span>
+                        <span class="mp-legend-item good">Good</span>
+                        <span class="mp-legend-item excellent">Excellent</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mp-main-grid">
+                <div class="advanced-risk-visualization">
+                    <div class="visualization-header"><h3>📉 Residual Plot</h3></div>
+                    <div class="chart-container-3d mp-chart-sm">
+                        <canvas id="mpResidualChart"></canvas>
+                    </div>
+                    <p class="mp-chart-caption">Each dot is one forecast: its horizontal position is the predicted price, its vertical position is how far off it was (actual − predicted). Dots scattered evenly around the zero line mean no systematic bias.</p>
+                </div>
+                <div class="advanced-risk-visualization">
+                    <div class="visualization-header"><h3>📊 Prediction Error Distribution</h3></div>
+                    <div class="chart-container-3d mp-chart-sm">
+                        <canvas id="mpErrorDistChart"></canvas>
+                    </div>
+                    <p class="mp-chart-caption">How often forecast errors of each size occurred. A tall peak near zero, with few large errors on either side, indicates a consistent model.</p>
+                </div>
+            </div>
+
+            <div class="advanced-risk-visualization">
+                <div class="visualization-header"><h3>🎯 Trend Direction Confusion Matrix</h3></div>
+                <div class="mp-confusion-layout">
+                    <div class="mp-confusion-matrix">
+                        <div class="mp-cm-corner"></div>
+                        <div class="mp-cm-header">Predicted Up</div>
+                        <div class="mp-cm-header">Predicted Down</div>
+                        <div class="mp-cm-header">Actual Up</div>
+                        <div class="mp-cm-cell mp-cm-tp" id="mpCmTP">-</div>
+                        <div class="mp-cm-cell mp-cm-fn" id="mpCmFN">-</div>
+                        <div class="mp-cm-header">Actual Down</div>
+                        <div class="mp-cm-cell mp-cm-fp" id="mpCmFP">-</div>
+                        <div class="mp-cm-cell mp-cm-tn" id="mpCmTN">-</div>
+                    </div>
+                    <div class="mp-confusion-metrics">
+                        <div class="mp-cm-metric"><span class="mp-cm-metric-label">Accuracy</span><span class="mp-cm-metric-value" id="mpCmAccuracy">-</span></div>
+                        <div class="mp-cm-metric"><span class="mp-cm-metric-label">Precision</span><span class="mp-cm-metric-value" id="mpCmPrecision">-</span></div>
+                        <div class="mp-cm-metric"><span class="mp-cm-metric-label">Recall</span><span class="mp-cm-metric-value" id="mpCmRecall">-</span></div>
+                        <div class="mp-cm-metric"><span class="mp-cm-metric-label">F1-Score</span><span class="mp-cm-metric-value" id="mpCmF1">-</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mp-interpretation-panel">
+                <div class="mp-interpretation-header">💬 What this means</div>
+                <p id="mpInterpretationText">-</p>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- Floating AI chat assistant (available from every page) -->
+<div id="marketMindChatWidget" class="mm-chat-widget">
+    <button id="mmChatLauncher" class="mm-chat-launcher" type="button" aria-label="Open Market Mind chat" aria-expanded="false" title="Chat with Market Mind">✦<span class="mm-chat-launcher-label">Ask AI</span></button>
+    <section id="mmChatPanel" class="mm-chat-panel" aria-label="Market Mind AI assistant" aria-hidden="true">
+        <header class="mm-chat-header">
+            <div class="mm-chat-avatar">✦</div>
+            <div class="mm-chat-heading"><strong>Market Mind AI</strong><span><i></i> Here to help</span></div>
+            <button id="mmChatClear" class="mm-chat-icon-btn" type="button" title="Start a new chat" aria-label="Start a new chat">↻</button>
+            <button id="mmChatMinimize" class="mm-chat-icon-btn" type="button" title="Minimize chat" aria-label="Minimize chat">−</button>
+            <button id="mmChatClose" class="mm-chat-icon-btn" type="button" title="Close chat" aria-label="Close chat">×</button>
+        </header>
+        <div id="mmChatMessages" class="mm-chat-messages" aria-live="polite">
+            <div class="mm-chat-message assistant"><div class="mm-chat-message-label">Market Mind AI</div><div class="mm-chat-message-body">Hi! 👋 I'm your Market Mind helper. Ask me in simple words about stock predictions, risk, sectors, portfolio allocation, or how to use this project. What would you like to understand?</div></div>
+        </div>
+        <div class="mm-chat-suggestions" id="mmChatSuggestions"><button type="button" data-mm-prompt="Explain stock market risk in simple words">Explain risk</button><button type="button" data-mm-prompt="How does stock price prediction work in this project?">Predictions</button><button type="button" data-mm-prompt="How should I use the investment advisor?">Using the advisor</button></div>
+        <form id="mmChatForm" class="mm-chat-composer"><textarea id="mmChatInput" rows="1" maxlength="1000" placeholder="Ask anything about Market Mind…" aria-label="Type your message" required></textarea><button id="mmChatSend" type="submit" aria-label="Send message" title="Send message">➤</button></form>
+        <div class="mm-chat-footnote">Helpful project guidance, not personalized financial advice.</div>
+    </section>
+</div>
+
+<script src="{{ url_for('static', filename='model_performance.js') }}"></script>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+<script src="{{ url_for('static', filename='marketmind_addons.js') }}"></script>
+<script src="{{ url_for('static', filename='theme.js') }}"></script>
+</body>
+</html>
