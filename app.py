@@ -1463,93 +1463,143 @@ def _build_chat_messages(question, metrics, history):
     return messages
 
 
+
 def _try_llm_chat(question, metrics, history):
-    """Answer a chat question with the configured model and Market Mind context."""
+    """Answer a chat question using OpenAI, Ollama, or Cloudflare Workers AI."""
     import urllib.error
     import urllib.request
 
     provider = os.environ.get('AI_PROVIDER', 'openai').strip().lower()
-    if provider not in {'openai', 'ollama'}:
-        raise RuntimeError("AI_PROVIDER must be set to either 'openai' or 'ollama' in mmupdate/.env.")
-    api_key = os.environ.get('OPENAI_API_KEY', '').strip()
-    if provider == 'openai' and not api_key:
-        raise RuntimeError("Ask AI is not configured. Add an API key or set AI_PROVIDER=ollama in mmupdate/.env and restart the app.")
+
+    if provider not in {'openai', 'ollama', 'cloudflare'}:
+        raise RuntimeError(
+            "AI_PROVIDER must be openai, ollama, or cloudflare."
+        )
+
     messages = _build_chat_messages(question, metrics, history)
 
-    if provider == 'ollama':
-        ollama_url = os.environ.get('OLLAMA_URL', 'http://localhost:11434').rstrip('/')
-        endpoint = ollama_url + '/api/chat'
+    if provider == 'cloudflare':
+        account_id = os.environ.get('CLOUDFLARE_ACCOUNT_ID', '').strip()
+        api_token = os.environ.get('CLOUDFLARE_API_TOKEN', '').strip()
+        model = os.environ.get(
+            'CLOUDFLARE_MODEL',
+            '@cf/meta/llama-3.1-8b-instruct'
+        )
+
+        if not account_id or not api_token:
+            raise RuntimeError(
+                "Cloudflare is not configured. Check CLOUDFLARE_ACCOUNT_ID "
+                "and CLOUDFLARE_API_TOKEN in Render."
+            )
+
+        endpoint = (
+            f"https://api.cloudflare.com/client/v4/accounts/"
+            f"{account_id}/ai/run/{model}"
+        )
+        body = json.dumps({
+            'messages': messages,
+            'temperature': 0.4,
+            'max_tokens': 1200
+        }).encode('utf-8')
+
+        headers = {
+            'Authorization': 'Bearer ' + api_token,
+            'Content-Type': 'application/json'
+        }
+
+    elif provider == 'ollama':
+        ollama_url = os.environ.get(
+            'OLLAMA_URL', 'http://localhost:11434'
+        ).rstrip('/')
         model = os.environ.get('OLLAMA_MODEL', 'llama3.2:3b')
+        endpoint = ollama_url + '/api/chat'
+
         body = json.dumps({
             'model': model,
             'messages': messages,
             'stream': False,
-            'options': {'temperature': 0.4, 'num_predict': 220, 'num_ctx': 4096}
+            'options': {
+                'temperature': 0.4,
+                'num_predict': 220,
+                'num_ctx': 4096
+            }
         }).encode('utf-8')
+
         headers = {'Content-Type': 'application/json'}
+
     else:
+        api_key = os.environ.get('OPENAI_API_KEY', '').strip()
+        if not api_key:
+            raise RuntimeError("OpenAI API key is missing.")
+
         endpoint = 'https://api.openai.com/v1/chat/completions'
         model = os.environ.get('OPENAI_MODEL', 'gpt-4o-mini')
+
         body = json.dumps({
             'model': model,
             'messages': messages,
             'temperature': 0.5,
             'max_tokens': 1200
         }).encode('utf-8')
-        headers = {'Authorization': 'Bearer ' + api_key, 'Content-Type': 'application/json'}
-    req = urllib.request.Request(endpoint, data=body, headers=headers, method='POST')
+
+        headers = {
+            'Authorization': 'Bearer ' + api_key,
+            'Content-Type': 'application/json'
+        }
+
+    req = urllib.request.Request(
+        endpoint, data=body, headers=headers, method='POST'
+    )
+
     try:
-        with urllib.request.urlopen(req, timeout=120 if provider == 'ollama' else 18) as response:
+        with urllib.request.urlopen(req, timeout=60) as response:
             result = json.loads(response.read().decode('utf-8'))
+
         if provider == 'ollama':
-            message = result.get('message') if isinstance(result, dict) else None
+            message = result.get('message', {})
             answer = message.get('content') if isinstance(message, dict) else None
+
+        elif provider == 'cloudflare':
+            cloudflare_result = result.get('result', {})
+            answer = (
+                cloudflare_result.get('response')
+                if isinstance(cloudflare_result, dict) else None
+            )
+
         else:
-            choices = result.get('choices') if isinstance(result, dict) else None
-            first_choice = choices[0] if isinstance(choices, list) and choices else None
-            message = first_choice.get('message') if isinstance(first_choice, dict) else None
+            choices = result.get('choices', [])
+            first_choice = choices[0] if choices else {}
+            message = first_choice.get('message', {})
             answer = message.get('content') if isinstance(message, dict) else None
-            if isinstance(first_choice, dict) and first_choice.get('finish_reason') == 'length':
-                raise RuntimeError("The answer reached the model output limit and may be incomplete. Please try again with a shorter question.")
+
         if not isinstance(answer, str) or not answer.strip():
-            raise RuntimeError("The AI provider returned an empty answer. Please try again.")
+            raise RuntimeError("The AI provider returned an empty answer.")
+
         return answer.strip()
+
     except urllib.error.HTTPError as exc:
-        provider_code = ''
-        try:
-            provider_error = json.loads(exc.read().decode('utf-8')).get('error', {})
-            if isinstance(provider_error, dict):
-                candidate_code = provider_error.get('code') or provider_error.get('type')
-                if isinstance(candidate_code, str):
-                    provider_code = candidate_code
-        except (ValueError, UnicodeDecodeError):
-            pass
-        app.logger.warning('Ask AI provider %s returned HTTP %s (error code: %s)', provider, exc.code, provider_code or 'unknown')
-        if provider == 'ollama':
-            if exc.code == 404:
-                message = f"Ollama does not have model '{model}' downloaded. Run `ollama pull {model}` and try again."
-            else:
-                message = f"Ollama returned HTTP {exc.code}. Check that Ollama is running and the selected model is available."
-            raise RuntimeError(message) from exc
-        if exc.code == 401:
-            message = "OpenAI returned HTTP 401: the API key is invalid, revoked, or not being loaded from the .env file you edited. Create a new API key in the OpenAI Platform, replace the value in mmupdate/.env, and restart Flask. Do not use a ChatGPT password."
-        elif exc.code == 403:
-            message = "OpenAI returned HTTP 403: the key was recognized, but the account or project may not have permission to use this API/model. Check the API project, model access, and organization settings."
-        elif exc.code == 429:
-            message = "OpenAI returned HTTP 429: the API project may have reached its usage quota or rate limit. Check API billing and usage, then try again."
-        else:
-            message = f"OpenAI request failed (HTTP {exc.code}). Check the Flask terminal for details."
-        raise RuntimeError(message) from exc
+        details = exc.read().decode('utf-8', errors='replace')[:500]
+        app.logger.warning(
+            '%s AI request failed: HTTP %s - %s',
+            provider, exc.code, details
+        )
+
+        if provider == 'cloudflare':
+            raise RuntimeError(
+                f"Cloudflare AI request failed (HTTP {exc.code}). "
+                "Check the API token permissions, Account ID, model name, "
+                "and Workers AI usage limit."
+            ) from exc
+
+        raise RuntimeError(
+            f"{provider.capitalize()} AI request failed (HTTP {exc.code})."
+        ) from exc
+
     except (urllib.error.URLError, TimeoutError) as exc:
-        app.logger.warning('Ask AI could not reach %s: %s', provider, exc)
-        if provider == 'ollama':
-            message = "Could not connect to Ollama at " + os.environ.get('OLLAMA_URL', 'http://localhost:11434') + ". Start Ollama and make sure its local service is running."
-        else:
-            message = "Could not reach OpenAI. Check the internet connection and try again."
-        raise RuntimeError(message) from exc
-    except (ValueError, KeyError, IndexError, TypeError) as exc:
-        app.logger.warning('Ask AI received an invalid response from %s: %s', provider, exc)
-        raise RuntimeError(provider.capitalize() + " returned an unexpected response. Please try again.") from exc
+        app.logger.warning('AI connection failed: %s', exc)
+        raise RuntimeError(
+            f"Could not connect to {provider.capitalize()} AI. Try again."
+        ) from exc
 
 
 def _select_project_context(question, documentation):
