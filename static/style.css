@@ -1433,3 +1433,21 @@ select {
 .mm-chat-suggestions {display:flex;gap:6px;flex-wrap:wrap;padding:9px 12px 2px;background:var(--bg-raised)}.mm-chat-suggestions button {border:1px solid var(--border);border-radius:999px;padding:6px 9px;background:var(--bg-panel);color:var(--text);font-size:10px;cursor:pointer}.mm-chat-suggestions button:hover {border-color:#7c5cff;color:var(--text-bright)}
 .mm-chat-composer {display:flex;align-items:flex-end;gap:8px;padding:10px 12px 8px;background:var(--bg-raised)}.mm-chat-composer textarea {flex:1;resize:none;max-height:120px;min-height:42px;padding:12px;border:1px solid var(--border-strong);border-radius:14px;background:var(--bg-inset);color:var(--text-bright);font:inherit;font-size:13px;line-height:1.4;outline:none}.mm-chat-composer textarea:focus {border-color:#7c5cff}.mm-chat-composer button {width:42px;height:42px;flex:0 0 42px;border:0;border-radius:13px;background:linear-gradient(135deg,#7c5cff,#4c7dff);color:#fff;font-size:20px;cursor:pointer}.mm-chat-composer button:disabled {opacity:.5;cursor:wait}.mm-chat-footnote {padding:0 12px 10px;text-align:center;background:var(--bg-raised);color:var(--text-faint);font-size:10px}
 @media(max-width:520px) { .mm-chat-widget {right:12px;bottom:12px}.mm-chat-panel {right:0;bottom:68px;width:calc(100vw - 24px);height:min(75vh,620px)}.mm-chat-launcher {height:54px;min-width:54px;padding:0 15px} }
+
+.main-footer {
+    text-align: center;
+    padding: 25px;
+    margin-top: 30px;
+    border-top: 1px solid var(--text-dim);
+    color: var(--text-dim);
+}
+
+.main-footer a {
+    color: var(--text);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.main-footer a:hover {
+    text-decoration: underline;
+}
