@@ -1,4 +1,4 @@
-# AI Stock Market Analysis & Prediction System
+# Stock Market Analysis & Prediction System
 
 A comprehensive Flask-based web application for stock market analysis and prediction with AI capabilities, designed to function like a mini trading platform.
 
